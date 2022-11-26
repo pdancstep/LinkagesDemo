@@ -672,15 +672,3 @@ class Operator {
 	}
     }
 }
-
-//compares nearby points to see if its profitable to move in a given direction,
-// and determines the appropriate shift...
-function compareShifts(neg,pos) {
-    if (abs(neg) < abs(pos)){
-	return -1;
-    } else if (abs(neg) > abs(pos)){
-	return 1;
-    } else {
-	return 0;
-    }
-}
