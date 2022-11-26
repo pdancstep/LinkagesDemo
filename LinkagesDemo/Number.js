@@ -13,12 +13,15 @@ class Number {
 
 	this.dragging = false;
 	this.mouseover = false;
+        this.hidden = false;
 
 	registerNode(this);
     }
 
     // check whether the number is under the mouse
     checkMouseover() {
+        if (this.hidden) { return false; }
+        
 	this.mouseover = dist(mouseX,
 			      mouseY,
 			      axisToPixelX(this.real),
@@ -35,7 +38,9 @@ class Number {
     // tell the number that it has been clicked on.
     // returns the current dragging state
     notifyClick() {
-	if (this.mouseover && this.free) {
+        if (this.hidden) { return false; }
+        
+        if (this.mouseover && this.free) {
 	    this.dragging = true;
 	}
 	return this.dragging;
@@ -99,6 +104,8 @@ class Number {
     
     // externally-used display function
     display() {
+        if (this.hidden) { return; }
+        
 	// TODO: change color if merged node?
 	this.drawNode();
 	if (this.free){
@@ -108,7 +115,9 @@ class Number {
 
     // display this node in reversing-mode style
     freeNodeDisplay() {
-	fill(255);
+        if (this.hidden) { return; }
+        
+        fill(255);
 	this.drawNode();
     }
 
