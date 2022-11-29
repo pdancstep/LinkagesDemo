@@ -300,7 +300,7 @@ class Operator {
 
         let s = new Solver(this, 1);
 	for (i=0; i<iterations; i++){
-            solver.iterate();            
+            s.iterate();            
 	}
         
         this.myInput1.setReal(s.r1);

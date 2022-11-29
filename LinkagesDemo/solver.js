@@ -29,9 +29,9 @@ class Solver {
 
 	    upperY = (this.iout + searchSize) - (this.i1 + this.i2);
 	    lowerY = (this.iout - searchSize) - (this.i1 + this.i2);
-
-            this.rout += pixelToAxisX(compareShifts(leftX, rightX));
-            this.iout += pixelToAxisY(compareShifts(upperY, lowerY));
+            
+            this.rout += compareShifts(leftX, rightX)/globalScale;
+            this.iout += compareShifts(lowerY, upperY)/globalScale;
 	    return;
 	    
 	case REVERSE1:
@@ -40,17 +40,17 @@ class Solver {
 	    upperY = (this.i1 + searchSize) - (this.iout - this.i2);
 	    lowerY = (this.i1 - searchSize) - (this.iout - this.i2);
 
-            this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
-	    return;
+            this.r1 += compareShifts(leftX, rightX)/globalScale;
+            this.i1 += compareShifts(lowerY, upperY)/globalScale;
+            return;
 	    
 	case REVERSE2: 
 	    leftX = (this.r2 - searchSize) - (this.rout - this.r1);
 	    rightX = (this.r2 + searchSize) - (this.rout - this.r1);
 	    upperY = (this.i2 + searchSize) - (this.iout - this.i1);
 	    lowerY = (this.i2 - searchSize) - (this.iout - this.i1);
-            this.r2 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i2 += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.r2 += compareShifts(leftX, rightX)/globalScale;
+            this.i2 += compareShifts(lowerY, upperY)/globalScale;
 	    return;
 	    
 	case COLLAPSED: 
@@ -58,8 +58,8 @@ class Solver {
 	    rightX = (this.rout + searchSize) - (this.r1 * 2);
 	    upperY = (this.iout + searchSize) - (this.i1 * 2);
 	    lowerY = (this.iout - searchSize) - (this.i1 * 2);
-            this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.rout += compareShifts(leftX, rightX)/globalScale;
+            this.iout += compareShifts(lowerY, upperY)/globalScale;
 	    return;
 	    
 	case REVCOLLAPSED: 
@@ -67,8 +67,8 @@ class Solver {
 	    rightX = (this.r1 + searchSize) - (this.rout / 2);
 	    upperY = (this.i1 + searchSize) - (this.iout / 2);
 	    lowerY = (this.i1 - searchSize) - (this.iout / 2);
-            this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.r2 = this.r1 += compareShifts(leftX, rightX)/globalScale;
+            this.i2 = this.i1 += compareShifts(lowerY, upperY)/globalScale;
 	    return;
 	    
 	case IDENTITY1:
@@ -84,7 +84,7 @@ class Solver {
 	let rprod = (this.r1 * this.r2) - (this.i1 * this.i2);
 	let iprod = (this.r1 * this.i2) + (this.i1 * this.r2);
 
-	let leftX, rightX, upperY, lowerY, movingNode, rquot, iquot;
+	let leftX, rightX, upperY, lowerY, denominator, rquot, iquot;
 	
 	switch (this.mode) {
 	case DEFAULT:
@@ -96,8 +96,8 @@ class Solver {
 	    upperY = (this.iout + searchSize) - iprod;
 	    lowerY = (this.iout - searchSize) - iprod;
 	    //decide whether/where to shift ouput position.
-	    this.rout += pixelToAxisX(compareShifts(leftX, rightX));
-            this.iout += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.rout += compareShifts(leftX, rightX)/globalScale;
+            this.iout += compareShifts(lowerY, upperY)/globalScale;
             return;
 	    
 	case REVERSE1: 
@@ -110,8 +110,8 @@ class Solver {
 	    upperY = (this.i1 + searchSize) - iquot;
 	    lowerY = (this.i1 - searchSize) - iquot;
 
-	    this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.r1 += compareShifts(leftX, rightX)/globalScale;
+            this.i1 += compareShifts(lowerY, upperY)/globalScale;
             return;
 	    
 	case REVERSE2: 
@@ -124,8 +124,8 @@ class Solver {
 	    upperY = (this.i2 + searchSize) - iquot;
 	    lowerY = (this.i2 - searchSize) - iquot;
 
-	    this.r2 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i2 += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.r2 += compareShifts(leftX, rightX)/globalScale;
+            this.i2 += compareShifts(lowerY, upperY)/globalScale;
             return;
 	    
 	case REVCOLLAPSED:
@@ -144,8 +144,8 @@ class Solver {
 	    rightX = (this.r1 + searchSize) - rquot;
 	    upperY = (this.i1 + searchSize) - iquot;
 	    lowerY = (this.i1 - searchSize) - iquot;
-	    this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
-            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
+            this.r2 = this.r1 += compareShifts(leftX, rightX)/globalScale;
+            this.i2 = this.i1 += compareShifts(lowerY, upperY)/globalScale;
             return;
 
 	case IDENTITY1:
