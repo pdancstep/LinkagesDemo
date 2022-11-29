@@ -297,14 +297,18 @@ class Operator {
 		this.myInput2.update();
 		this.myOutput.update();
 	}
-		
+
+        let s = new Solver(this, 1);
 	for (i=0; i<iterations; i++){
-	    if (this.type==ADDER){
-		this.propagateOutputSum();
-	    } else if (this.type==MULTIPLIER){
-		this.propagateOutputProd();
-	    }
-	}	
+            solver.iterate();            
+	}
+        
+        this.myInput1.setReal(s.r1);
+        this.myInput1.setImaginary(s.i1);
+        this.myInput2.setReal(s.r2);
+        this.myInput2.setImaginary(s.i2);
+        this.myOutput.setReal(s.rout);
+        this.myOutput.setImaginary(s.iout);
     }
 
     // if node1 and node2 are both arguments, switch to appropriate collapsed mode
@@ -379,147 +383,6 @@ class Operator {
 	}
     }
     
-    propagateOutputSum() {
-	let r1 = this.myInput1.getReal();
-	let i1 = this.myInput1.getImaginary();
-	let r2 = this.myInput2.getReal();
-	let i2 = this.myInput2.getImaginary();
-	let rout = this.myOutput.getReal();
-	let iout = this.myOutput.getImaginary();
-
-	let leftX, rightX, upperY, lowerY, movingNode;
-	switch (this.mode) {
-	case DEFAULT:
-	    leftX = (rout - searchSize) - (r1 + r2);
-	    rightX = (rout + searchSize) - (r1 + r2);
-
-	    upperY = (iout + searchSize) - (i1 + i2);
-	    lowerY = (iout - searchSize) - (i1 + i2);
-
-	    movingNode = this.myOutput;
-	    break;
-	    
-	case REVERSE1: 
-	    leftX = (r1 - searchSize) - (rout - r2);
-	    rightX = (r1 + searchSize) - (rout - r2);
-	    upperY = (i1 + searchSize) - (iout - i2);
-	    lowerY = (i1 - searchSize) - (iout - i2);
-	    movingNode = this.myInput1;
-	    break;
-	    
-	case REVERSE2: 
-	    leftX = (r2 - searchSize) - (rout - r1);
-	    rightX = (r2 + searchSize) - (rout - r1);
-	    upperY = (i2 + searchSize) - (iout - i1);
-	    lowerY = (i2 - searchSize) - (iout - i1);
-	    movingNode = this.myInput2;
-	    break;
-	    
-	case COLLAPSED: 
-	    leftX = (rout - searchSize) - (r1 * 2);
-	    rightX = (rout + searchSize) - (r1 * 2);
-	    upperY = (iout + searchSize) - (i1 * 2);
-	    lowerY = (iout - searchSize) - (i1 * 2);
-	    movingNode = this.myOutput;
-	    break;
-	    
-	case REVCOLLAPSED: 
-	    leftX = (r1 - searchSize) - (rout / 2);
-	    rightX = (r1 + searchSize) - (rout / 2);
-	    upperY = (i1 + searchSize) - (iout / 2);
-	    lowerY = (i1 - searchSize) - (iout / 2);
-	    movingNode = this.myInput1;
-	    break;
-	    
-	case IDENTITY1:
-	case IDENTITY2:
-	    return;
-	    
-	default:
-	    // should not get here
-	}
-	movingNode.shiftPx(compareShifts(leftX, rightX),
-			   compareShifts(upperY, lowerY));
-    }
-
-    propagateOutputProd() {
-	let r1 = this.myInput1.getReal();
-	let i1 = this.myInput1.getImaginary();
-	let r2 = this.myInput2.getReal();
-	let i2 = this.myInput2.getImaginary();
-	let rout = this.myOutput.getReal();
-	let iout = this.myOutput.getImaginary();
-	let rprod = (r1 * r2) - (i1 * i2);
-	let iprod = (r1 * i2) + (i1 * r2);
-
-	let leftX, rightX, upperY, lowerY, movingNode, denominator, rquot, iquot;
-	
-	switch (this.mode) {
-	case DEFAULT:
-	case COLLAPSED:
-	    //check whether moving left or right better fits constraints...
-	    leftX = (rout - searchSize) - rprod;
-	    rightX = (rout + searchSize) - rprod;
-	    //...same for up or down movement...
-	    upperY = (iout + searchSize) - iprod;
-	    lowerY = (iout - searchSize) - iprod;
-	    //decide whether/where to shift ouput position.
-	    movingNode = this.myOutput;
-	    break;
-	    
-	case REVERSE1: 
-	    denominator = (r2 * r2) + (i2 * i2);
-	    rquot = ((rout * r2) + (iout * i2)) / denominator;
-	    iquot = ((iout * r2) - (rout * i2)) / denominator;
-	    
-	    leftX = (r1 - searchSize) - rquot;
-	    rightX = (r1 + searchSize) - rquot;
-	    upperY = (i1 + searchSize) - iquot;
-	    lowerY = (i1 - searchSize) - iquot;
-	    movingNode = this.myInput1;
-	    break;
-	    
-	case REVERSE2: 
-	    denominator = (r1 * r1) + (i1 * i1);
-	    rquot = ((rout * r1) + (iout * i1)) / denominator;
-	    iquot = ((iout * r1) - (rout * i1)) / denominator;
-	    
-	    leftX = (r2 - searchSize) - rquot;
-	    rightX = (r2 + searchSize) - rquot;
-	    upperY = (i2 + searchSize) - iquot;
-	    lowerY = (i2 - searchSize) - iquot;
-	    movingNode = this.myInput2;
-	    break;
-	    
-	case REVCOLLAPSED:
-	    // adjust input in two stages
-	    // (not actually sure how this works -J)
-	    this.myInput1.shift((r1 - r2)*.4, (i1 - i2)*.4);
-	    r2 = this.myInput1.getReal();
-	    i2 = this.myInput1.getImaginary();
-	    
-	    denominator = (r2 * r2) + (i2 * i2);
-	    rquot = ((rout * r2) + (iout * i2)) / denominator;
-	    iquot = ((iout * r2) - (rout * i2)) / denominator;
-		
-	    leftX = (r1 - searchSize) - rquot;
-	    rightX = (r1 + searchSize) - rquot;
-	    upperY = (i1 + searchSize) - iquot;
-	    lowerY = (i1 - searchSize) - iquot;
-	    movingNode = this.myInput1;
-	 break;
-
-	case IDENTITY1:
-	case IDENTITY2:
-	    return;
-	    
-	default:
-	    // should not get here
-	}
-	movingNode.shiftPx(compareShifts(leftX, rightX),
-			   compareShifts(upperY, lowerY));
-    }
-
     // display all the pieces of this relation
     display() {
         if (this.hidden) { return; }

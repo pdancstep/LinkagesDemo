@@ -54,7 +54,6 @@ class Solver {
 	    return;
 	    
 	case COLLAPSED: 
-            
 	    leftX = (this.rout - searchSize) - (this.r1 * 2);
 	    rightX = (this.rout + searchSize) - (this.r1 * 2);
 	    upperY = (this.iout + searchSize) - (this.i1 * 2);
@@ -64,7 +63,6 @@ class Solver {
 	    return;
 	    
 	case REVCOLLAPSED: 
-            // dependent node is 1
 	    leftX = (this.r1 - searchSize) - (this.rout / 2);
 	    rightX = (this.r1 + searchSize) - (this.rout / 2);
 	    upperY = (this.i1 + searchSize) - (this.iout / 2);
@@ -83,10 +81,81 @@ class Solver {
     }
 
     iterateProd() {
-        // TODO
-    }
+	let rprod = (this.r1 * this.r2) - (this.i1 * this.i2);
+	let iprod = (this.r1 * this.i2) + (this.i1 * this.r2);
 
-    
+	let leftX, rightX, upperY, lowerY, movingNode, rquot, iquot;
+	
+	switch (this.mode) {
+	case DEFAULT:
+	case COLLAPSED:
+	    //check whether moving left or right better fits constraints...
+	    leftX = (this.rout - searchSize) - rprod;
+	    rightX = (this.rout + searchSize) - rprod;
+	    //...same for up or down movement...
+	    upperY = (this.iout + searchSize) - iprod;
+	    lowerY = (this.iout - searchSize) - iprod;
+	    //decide whether/where to shift ouput position.
+	    this.rout += pixelToAxisX(compareShifts(leftX, rightX));
+            this.iout += pixelToAxisY(compareShifts(upperY, lowerY));
+            return;
+	    
+	case REVERSE1: 
+	    denominator = (this.r2 * this.r2) + (this.i2 * this.i2);
+	    rquot = ((this.rout * this.r2) + (this.iout * this.i2)) / denominator;
+	    iquot = ((this.iout * this.r2) - (this.rout * this.i2)) / denominator;
+	    
+	    leftX = (this.r1 - searchSize) - rquot;
+	    rightX = (this.r1 + searchSize) - rquot;
+	    upperY = (this.i1 + searchSize) - iquot;
+	    lowerY = (this.i1 - searchSize) - iquot;
+
+	    this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
+            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
+            return;
+	    
+	case REVERSE2: 
+	    denominator = (this.r1 * this.r1) + (this.i1 * this.i1);
+	    rquot = ((this.rout * this.r1) + (this.iout * this.i1)) / denominator;
+	    iquot = ((this.iout * this.r1) - (this.rout * this.i1)) / denominator;
+	    
+	    leftX = (this.r2 - searchSize) - rquot;
+	    rightX = (this.r2 + searchSize) - rquot;
+	    upperY = (this.i2 + searchSize) - iquot;
+	    lowerY = (this.i2 - searchSize) - iquot;
+
+	    this.r2 += pixelToAxisX(compareShifts(leftX, rightX));
+            this.i2 += pixelToAxisY(compareShifts(upperY, lowerY));
+            return;
+	    
+	case REVCOLLAPSED:
+	    // adjust input in two stages
+	    // (not actually sure how this works -J)
+            this.r1 += (this.r1 - this.r2) * .4;
+            this.i1 += (this.i1 - this.i2) * .4;
+            this.r2 = this.r1;
+            this.i2 = this.i1;
+            
+	    denominator = (this.r2 * this.r2) + (this.i2 * this.i2);
+	    rquot = ((this.rout * this.r2) + (this.iout * this.i2)) / denominator;
+	    iquot = ((this.iout * this.r2) - (this.rout * this.i2)) / denominator;
+            
+	    leftX = (this.r1 - searchSize) - rquot;
+	    rightX = (this.r1 + searchSize) - rquot;
+	    upperY = (this.i1 + searchSize) - iquot;
+	    lowerY = (this.i1 - searchSize) - iquot;
+	    this.r1 += pixelToAxisX(compareShifts(leftX, rightX));
+            this.i1 += pixelToAxisY(compareShifts(upperY, lowerY));
+            return;
+
+	case IDENTITY1:
+	case IDENTITY2:
+	    return;
+	    
+	default:
+	    // should not get here
+	}
+    }
 }
 
 

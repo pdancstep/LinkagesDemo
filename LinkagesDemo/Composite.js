@@ -6,13 +6,13 @@ class Composite extends Operator {
 	super(COMPOSITE);
 
 	// hide internal operators
-	let this.internal = comps;
+        this.internal = comps;
 	for (const oper of comps) {
 	    oper.hidden = true;
 	}
 
 	// determine which nodes are contained within internal operators
-	let this.nodes = [];
+        this.nodes = [];
 	for (const node of myNumbers) {
 	    let contained = true;
 	    for (const op of node.operators) {
