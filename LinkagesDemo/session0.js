@@ -143,5 +143,3 @@ myLevels[10] = {
     return true
     }
 };
-
-

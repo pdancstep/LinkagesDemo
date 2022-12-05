@@ -16,9 +16,12 @@ const updateCycles = 3;
 
 //center coords.
 const centerX = 650;
+const CENTER_X = 650;
 const centerY = 450;
+const CENTER_Y = 450;
 //global scale (standard, 50px = 1 unit)
 var globalScale = 50;
+const GLOBAL_SCALE = 50;
 
 //double tap reference (sketch level)
 var tappedOnce = false;
@@ -39,7 +42,6 @@ var indicatorFlash = false;
 var supressCoords = false;
 
 function draw() {
-
     //manage double tap
     if(tappedOnce){
 	if((millis()-currentTime)>doubleTapTimer){
@@ -65,28 +67,25 @@ function draw() {
     
     background(indicator);
 
-
     if(!myLevels[level].coordinatesOff){
         //background grid
         for (i=-30; i<30; i++){
             strokeWeight(1);
             stroke(75);
             noFill();
-            line(centerX+i*globalScale,0,centerX+i*globalScale,height);
-            line(0,centerY+i*globalScale,width,centerY+i*globalScale);
+            line(CENTER_X+i*GLOBAL_SCALE, 0, CENTER_X+i*GLOBAL_SCALE, height);
+            line(0, CENTER_Y+i*GLOBAL_SCALE, width, CENTER_Y+i*GLOBAL_SCALE);
         }
-    
+        
         //axes,unit circle
         noFill();
         stroke(200);
         strokeWeight(1);
-        line(0,centerY,width,centerY);
-        line(centerX,0,centerX,height);
-        ellipse(centerX,centerY,2*globalScale,2*globalScale); // unit circle
+        line(0, CENTER_Y, width, CENTER_Y);
+        line(CENTER_X, 0, CENTER_X ,height);
+        ellipse(CENTER_X, CENTER_Y, 2*GLOBAL_SCALE, 2*GLOBAL_SCALE); // unit circle
     }
     
-    
-
     //draw operators
     for (const oper of myOperators) {
 	oper.display();
@@ -99,11 +98,11 @@ function draw() {
         for (i=-30; i<30; i++){
             fill(150);
             noStroke();
-        	ellipse(centerX+i*globalScale, centerY, 5, 5);
-        	ellipse(centerX, centerY+i*globalScale, 5, 5);
+            ellipse(CENTER_X+i*GLOBAL_SCALE, CENTER_Y, 5, 5);
+            ellipse(CENTER_X, CENTER_Y+i*GLOBAL_SCALE, 5, 5);
             if(!supressCoords){
-                text(i, centerX+i*globalScale, centerY-16);
-                text(-i+"i", centerX-20, centerY+i*globalScale);
+                text(i, CENTER_X+i*GLOBAL_SCALE, CENTER_Y-16);
+                text(-i+"i", CENTER_X-20, CENTER_Y+i*GLOBAL_SCALE);
             }
         }
     }
@@ -111,7 +110,6 @@ function draw() {
     //buttons
     textSize(15);
     textAlign(LEFT,CENTER);
-
 
     noStroke();
     fill(200)
@@ -144,8 +142,6 @@ function draw() {
 
     //make tutorials run on top of this interactive canvas...
     runTutorial();
-
-
 }
 
 function printToPlot(){
@@ -186,23 +182,6 @@ function printToPlot(){
     }
 }
 
-
-function pixelToAxisX(coord) {
-    return (coord - centerX) / globalScale;
-}
-
-function pixelToAxisY(coord) {
-    return (centerY - coord) / globalScale;
-}
-
-function axisToPixelX(coord) {
-    return (coord * globalScale) + centerX;
-}
-
-function axisToPixelY(coord) {
-    return centerY - (coord * globalScale);
-}
-
 function keyPressed(){
     //n for 'next'
     if((keyCode === 78)&&(level!=(myLevels.length-1))){
@@ -214,15 +193,8 @@ function keyPressed(){
         level--;
     }
 }
-    
-
-
-
-
-
 
 function touchStarted() {
-
     if (reversingOperator) {
 	closeReversal();
     }

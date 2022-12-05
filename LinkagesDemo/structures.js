@@ -1,8 +1,6 @@
-
 // overall graph lives in these two global arrays
 var myNumbers = [];
 var myOperators = [];
-
 
 // nodes to potentially give up control of when in reversal mode
 var freeNodes = [];

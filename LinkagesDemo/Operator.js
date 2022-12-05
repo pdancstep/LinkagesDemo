@@ -130,7 +130,7 @@ class Operator {
 	    // ...build a path appending this operator, and then...
 	    let newpath = path.slice();
 	    newpath.push(this, INPUT1);
-	    if (this.myInput1.free) {
+	    if (this.myInput1.isFree()) {
 		// ...if myInput1 is indeed free, register this path.
 		freeNodes.push(this.myInput1);
 		freeNodePaths.push(newpath);
@@ -144,7 +144,7 @@ class Operator {
 	if (this.mode==DEFAULT || this.mode==REVERSE1) {
 	    let newpath = path.slice();
 	    newpath.push(this, INPUT2);
-	    if (this.myInput2.free) {
+	    if (this.myInput2.isFree()) {
 		freeNodes.push(this.myInput2);
 		freeNodePaths.push(newpath);
 	    }else{
@@ -157,7 +157,7 @@ class Operator {
 	    || this.mode==IDENTITY1 || this.mode==IDENTITY2) {
 	    let newpath = path.slice();
 	    newpath.push(this, OUTPUT);
-	    if (this.myOutput.free) {
+	    if (this.myOutput.isFree()) {
 		freeNodes.push(this.myOutput);
 		freeNodePaths.push(newpath);
 	    }else{
@@ -303,12 +303,12 @@ class Operator {
             s.iterate();            
 	}
         
-        this.myInput1.setReal(s.r1);
-        this.myInput1.setImaginary(s.i1);
-        this.myInput2.setReal(s.r2);
-        this.myInput2.setImaginary(s.i2);
-        this.myOutput.setReal(s.rout);
-        this.myOutput.setImaginary(s.iout);
+        this.myInput1.x = s.r1;
+        this.myInput1.y = s.i1;
+        this.myInput2.x = s.r2;
+        this.myInput2.y = s.i2;
+        this.myOutput.x = s.rout;
+        this.myOutput.y = s.iout;
     }
 
     // if node1 and node2 are both arguments, switch to appropriate collapsed mode
@@ -361,11 +361,11 @@ class Operator {
 	    return;
 	}
 	if (this.type == ADDER) {
-	    idnode.setReal(0);
-	    idnode.setImaginary(0);
+	    idnode.x = 0;
+	    idnode.y = 0;
 	} else if (this.type == MULTIPLIER) {
-	    idnode.setReal(1);
-	    idnode.setImaginary(0);
+	    idnode.x = 1;
+	    idnode.y = 0;
 	}
     }
     
@@ -407,9 +407,9 @@ class Operator {
 		strokeWeight(1);
 		beginShape();
 		vertex(centerX,centerY);
-		vertex(this.myInput1.getRealPx(), this.myInput1.getImaginaryPx());
-		vertex(this.myOutput.getRealPx(), this.myOutput.getImaginaryPx());
-		vertex(this.myInput2.getRealPx(), this.myInput2.getImaginaryPx());
+		vertex(this.myInput1.getXPx(), this.myInput1.getYPx());
+		vertex(this.myOutput.getXPx(), this.myOutput.getYPx());
+		vertex(this.myInput2.getXPx(), this.myInput2.getYPx());
 		endShape(CLOSE);
 		// nodes
 		fill(200,255,255);
@@ -423,20 +423,17 @@ class Operator {
 		// lines
 		noFill();
 		strokeWeight(1);
-
-		
-
-		if(myLevels[level].operatorOff){
-			stroke(255,0,0,0);
-		}else if(myLevels[level].operatorAlpha){
-			stroke(255,0,0,myLevels[level].operatorAlpha);
-		}else{
-			stroke(255,0,0);
-		}
-		
-
-		line(centerX, centerY,
-		     this.myOutput.getRealPx(), this.myOutput.getImaginaryPx());
+                
+                if(myLevels[level].operatorOff){
+                    stroke(255,0,0,0);
+                }else if(myLevels[level].operatorAlpha){
+                    stroke(255,0,0,myLevels[level].operatorAlpha);
+                }else{
+                    stroke(255,0,0);
+                }
+                
+		line(CENTER_X, CENTER_Y,
+		     this.myOutput.getXPx(), this.myOutput.getYPx());
 
 		if(myLevels[level].operatorOff){
 			stroke(255,100,0,0);
@@ -445,27 +442,24 @@ class Operator {
 		}else{
 			stroke(255,100,0);
 		}
-
-		
-
-		line(centerX, centerY,
-		     this.myInput1.getRealPx(), this.myInput1.getImaginaryPx());
-		line(centerX, centerY,
-		     this.myInput2.getRealPx(), this.myInput2.getImaginaryPx());
-		//nodes
-		noStroke();     
-		fill(255,100,0);
-		this.myInput1.display();
-		fill(255,100,0);
-		this.myInput2.display();
-		fill(255,0,0);
-		this.myOutput.display();
+                
+                line(CENTER_X, CENTER_Y,
+                     this.myInput1.getXPx(), this.myInput1.getYPx());
+                line(CENTER_X, CENTER_Y,
+                     this.myInput2.getXPx(), this.myInput2.getYPx());
+                //nodes
+                noStroke();     
+                fill(255,100,0);
+                this.myInput1.display();
+                fill(255,100,0);
+                this.myInput2.display();
+                fill(255,0,0);
+                this.myOutput.display();
 	    }
 	    
 	}else{ // display for collapsed operator...
 	    if (this.type==ADDER) {
 		noFill();
-
 		
 		if(myLevels[level].operatorOff){
 			stroke(30,200,225,0);
@@ -474,13 +468,11 @@ class Operator {
 		}else{
 			stroke(30,200,225);
 		}
-		
-
 
 		strokeWeight(1);
 		// only one line in a doubler/halver
-		line(centerX, centerY,
-		     this.myOutput.getRealPx(), this.myOutput.getImaginaryPx());
+		line(CENTER_X, CENTER_Y,
+		     this.myOutput.getXPx(), this.myOutput.getYPx());
 		//nodes
 		fill(200,255,200);
 		if (this.mode == IDENTITY2) {
@@ -494,7 +486,6 @@ class Operator {
 	    }else if (this.type==MULTIPLIER) {
 		// lines for square and root
 		noFill();
-
 		
 		if(myLevels[level].operatorOff){
 			stroke(255,0,0,0);
@@ -504,10 +495,9 @@ class Operator {
 			stroke(255,0,0);
 		}
 		
-
 		strokeWeight(1);
-		line(centerX, centerY,
-		     this.myOutput.getRealPx(), this.myOutput.getImaginaryPx());
+		line(CENTER_X, CENTER_Y,
+		     this.myOutput.getXPx(), this.myOutput.getYPx());
 
 		if(myLevels[level].operatorOff){
 			stroke(255,100,0,0);
@@ -518,8 +508,8 @@ class Operator {
 		}
 		
 		if (this.mode==COLLAPSED || this.mode==REVCOLLAPSED) {
-		    line(centerX, centerY,
-			 this.myInput1.getRealPx(), this.myInput1.getImaginaryPx());
+		    line(CENTER_X, CENTER_Y,
+			 this.myInput1.getXPx(), this.myInput1.getYPx());
 		}
 		//nodes
 		noStroke();
