@@ -54,16 +54,16 @@ function runTutorial() {
         noStroke();
         fill(150);
         for(i=0;i<8;i++){
-            ellipse(centerX+globalScale*cos(i*TWO_PI/8),centerY+globalScale*sin(i*TWO_PI/8),10,10)
+            ellipse(CENTER_X+globalScale*cos(i*TWO_PI/8),CENTER_Y+globalScale*sin(i*TWO_PI/8),10,10)
         }
-        text("0",centerX+1.1*globalScale,centerY);
-        text("𝝅/4",centerX+1.1*globalScale*cos(-TWO_PI/8),centerY+1.1*globalScale*sin(-TWO_PI/8));
-        text("𝝅/2",centerX,centerY+1.1*globalScale*sin(-TWO_PI/4));
-        text("3𝝅/4",centerX+1.1*globalScale*cos(-3*TWO_PI/8),centerY+1.1*globalScale*sin(-3*TWO_PI/8));
-        text("𝝅",centerX+1.1*globalScale*cos(PI),centerY);
-        text("5𝝅/4",centerX+1.1*globalScale*cos(-5*TWO_PI/8),centerY+1.1*globalScale*sin(-5*TWO_PI/8));
-        text("3𝝅/2",centerX,centerY+1.1*globalScale*sin(-3*PI/2));
-        text("7𝝅/4",centerX+1.1*globalScale*cos(-7*TWO_PI/8),centerY+1.1*globalScale*sin(-7*TWO_PI/8));
+        text("0",CENTER_X+1.1*globalScale,CENTER_Y);
+        text("𝝅/4",CENTER_X+1.1*globalScale*cos(-TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-TWO_PI/8));
+        text("𝝅/2",CENTER_X,CENTER_Y+1.1*globalScale*sin(-TWO_PI/4));
+        text("3𝝅/4",CENTER_X+1.1*globalScale*cos(-3*TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-3*TWO_PI/8));
+        text("𝝅",CENTER_X+1.1*globalScale*cos(PI),CENTER_Y);
+        text("5𝝅/4",CENTER_X+1.1*globalScale*cos(-5*TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-5*TWO_PI/8));
+        text("3𝝅/2",CENTER_X,CENTER_Y+1.1*globalScale*sin(-3*PI/2));
+        text("7𝝅/4",CENTER_X+1.1*globalScale*cos(-7*TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-7*TWO_PI/8));
     }else if(myLevels[level].degrees){
         //turn off cartesian coordinates...
         supressCoords = true;
@@ -71,16 +71,16 @@ function runTutorial() {
         noStroke();
         fill(150);
         for(i=0;i<8;i++){
-            ellipse(centerX+globalScale*cos(i*TWO_PI/8),centerY+globalScale*sin(i*TWO_PI/8),10,10)
+            ellipse(CENTER_X+globalScale*cos(i*TWO_PI/8),CENTER_Y+globalScale*sin(i*TWO_PI/8),10,10)
         }
-        text("0°",centerX+1.1*globalScale,centerY);
-        text("45°",centerX+1.1*globalScale*cos(-TWO_PI/8),centerY+1.1*globalScale*sin(-TWO_PI/8));
-        text("90°",centerX,centerY+1.1*globalScale*sin(-TWO_PI/4));
-        text("135°",centerX+1.1*globalScale*cos(-3*TWO_PI/8),centerY+1.1*globalScale*sin(-3*TWO_PI/8));
-        text("180°",centerX+1.1*globalScale*cos(PI),centerY);
-        text("225°",centerX+1.1*globalScale*cos(-5*TWO_PI/8),centerY+1.1*globalScale*sin(-5*TWO_PI/8));
-        text("270°",centerX,centerY+1.1*globalScale*sin(-3*PI/2));
-        text("315°",centerX+1.1*globalScale*cos(-7*TWO_PI/8),centerY+1.1*globalScale*sin(-7*TWO_PI/8));
+        text("0°",CENTER_X+1.1*globalScale,CENTER_Y);
+        text("45°",CENTER_X+1.1*globalScale*cos(-TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-TWO_PI/8));
+        text("90°",CENTER_X,CENTER_Y+1.1*globalScale*sin(-TWO_PI/4));
+        text("135°",CENTER_X+1.1*globalScale*cos(-3*TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-3*TWO_PI/8));
+        text("180°",CENTER_X+1.1*globalScale*cos(PI),CENTER_Y);
+        text("225°",CENTER_X+1.1*globalScale*cos(-5*TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-5*TWO_PI/8));
+        text("270°",CENTER_X,CENTER_Y+1.1*globalScale*sin(-3*PI/2));
+        text("315°",CENTER_X+1.1*globalScale*cos(-7*TWO_PI/8),CENTER_Y+1.1*globalScale*sin(-7*TWO_PI/8));
     }else{
         supressCoords = false;
     }
@@ -97,9 +97,9 @@ function runTutorial() {
             &&myOperators[0].type==MULTIPLIER){
 
                 //measure relevant radii
-                input1Radius = sqrt(dist(axisToPixelX(myOperators[0].myInput1.real),axisToPixelY(myOperators[0].myInput1.imaginary),centerX,centerY)*dist(axisToPixelX(myOperators[0].myInput1.real),axisToPixelY(myOperators[0].myInput1.imaginary),centerX,centerY));
-                input2Radius = sqrt(dist(axisToPixelX(myOperators[0].myInput2.real),axisToPixelY(myOperators[0].myInput2.imaginary),centerX,centerY)*dist(axisToPixelX(myOperators[0].myInput2.real),axisToPixelY(myOperators[0].myInput2.imaginary),centerX,centerY));
-                outputRadius = sqrt(dist(axisToPixelX(myOperators[0].myOutput.real),axisToPixelY(myOperators[0].myOutput.imaginary),centerX,centerY)*dist(axisToPixelX(myOperators[0].myOutput.real),axisToPixelY(myOperators[0].myOutput.imaginary),centerX,centerY));
+                input1Radius = sqrt(dist(axisToPixelX(myOperators[0].myInput1.real),axisToPixelY(myOperators[0].myInput1.imaginary),CENTER_X,CENTER_Y)*dist(axisToPixelX(myOperators[0].myInput1.real),axisToPixelY(myOperators[0].myInput1.imaginary),CENTER_X,CENTER_Y));
+                input2Radius = sqrt(dist(axisToPixelX(myOperators[0].myInput2.real),axisToPixelY(myOperators[0].myInput2.imaginary),CENTER_X,CENTER_Y)*dist(axisToPixelX(myOperators[0].myInput2.real),axisToPixelY(myOperators[0].myInput2.imaginary),CENTER_X,CENTER_Y));
+                outputRadius = sqrt(dist(axisToPixelX(myOperators[0].myOutput.real),axisToPixelY(myOperators[0].myOutput.imaginary),CENTER_X,CENTER_Y)*dist(axisToPixelX(myOperators[0].myOutput.real),axisToPixelY(myOperators[0].myOutput.imaginary),CENTER_X,CENTER_Y));
 
                 //determine if inputs are on a nominal circle
                 input1OnCircle = input2OnCircle = false;
@@ -129,7 +129,7 @@ function runTutorial() {
                         stroke(255,100,0,100);
                         strokeWeight(1);
                     }
-                    ellipse(centerX,centerY,2*i*globalScale,2*i*globalScale);
+                    ellipse(CENTER_X,CENTER_Y,2*i*globalScale,2*i*globalScale);
                 }
 
 
@@ -158,7 +158,7 @@ function runTutorial() {
             &&myOperators[0].type==ADDER){
                 fill(0,200,225,150);
                 beginShape();
-                    vertex(centerX,centerY);
+                    vertex(CENTER_X,CENTER_Y);
                     vertex(myOperators[0].myInput1.getRealPx(), myOperators[0].myInput1.getImaginaryPx());
                     vertex(myOperators[0].myOutput.getRealPx(), myOperators[0].myOutput.getImaginaryPx());
                     vertex(myOperators[0].myInput2.getRealPx(), myOperators[0].myInput2.getImaginaryPx());
@@ -177,15 +177,15 @@ function runTutorial() {
                 fill(255,100,0,100);
                 
                 beginShape();
-                    vertex(centerX,centerY);
-                    vertex(centerX+globalScale,centerY);
+                    vertex(CENTER_X,CENTER_Y);
+                    vertex(CENTER_X+globalScale,CENTER_Y);
                     vertex(myOperators[0].myInput1.getRealPx(), myOperators[0].myInput1.getImaginaryPx());
                 endShape(CLOSE);
 
                 fill(255,0,0,100);
 
                 beginShape();
-                    vertex(centerX,centerY);
+                    vertex(CENTER_X,CENTER_Y);
                     vertex(myOperators[0].myOutput.getRealPx(), myOperators[0].myOutput.getImaginaryPx());
                     vertex(myOperators[0].myInput2.getRealPx(), myOperators[0].myInput2.getImaginaryPx());
                 endShape(CLOSE);
@@ -203,7 +203,7 @@ function runTutorial() {
                 if(myOperators[0].myInput1.dragging){
                         
                         beginShape();
-                            vertex(centerX,centerY);
+                            vertex(CENTER_X,CENTER_Y);
                             vertex(myOperators[0].myOutput.getRealPx(), myOperators[0].myOutput.getImaginaryPx());
                             vertex(myOperators[0].myInput1.getRealPx(), myOperators[0].myInput1.getImaginaryPx());
                         endShape(CLOSE);
@@ -211,7 +211,7 @@ function runTutorial() {
                 }else if(myOperators[0].myInput2.dragging){
 
                     beginShape();
-                        vertex(centerX,centerY);
+                        vertex(CENTER_X,CENTER_Y);
                         vertex(myOperators[0].myOutput.getRealPx(), myOperators[0].myOutput.getImaginaryPx());
                         vertex(myOperators[0].myInput2.getRealPx(), myOperators[0].myInput2.getImaginaryPx());
                     endShape(CLOSE);
@@ -258,37 +258,37 @@ function runTutorial() {
             //vertical projections...
             noStroke();
             fill(180,110,225);
-            ellipse(myOperators[0].myInput1.getRealPx(),centerY,15,15);
-            ellipse(myOperators[0].myInput2.getRealPx(),centerY,15,15);
+            ellipse(myOperators[0].myInput1.getRealPx(),CENTER_Y,15,15);
+            ellipse(myOperators[0].myInput2.getRealPx(),CENTER_Y,15,15);
 
             fill(150,0,255);
-            ellipse(myOperators[0].myOutput.getRealPx(),centerY,15,15);
+            ellipse(myOperators[0].myOutput.getRealPx(),CENTER_Y,15,15);
 
             noFill();
             stroke(180,110,225);
-            line(myOperators[0].myInput1.getRealPx(),myOperators[0].myInput1.getImaginaryPx(),myOperators[0].myInput1.getRealPx(),centerY);
-            line(myOperators[0].myInput2.getRealPx(),myOperators[0].myInput2.getImaginaryPx(),myOperators[0].myInput2.getRealPx(),centerY);
+            line(myOperators[0].myInput1.getRealPx(),myOperators[0].myInput1.getImaginaryPx(),myOperators[0].myInput1.getRealPx(),CENTER_Y);
+            line(myOperators[0].myInput2.getRealPx(),myOperators[0].myInput2.getImaginaryPx(),myOperators[0].myInput2.getRealPx(),CENTER_Y);
 
             stroke(150,0,255);
-            line(myOperators[0].myOutput.getRealPx(),myOperators[0].myOutput.getImaginaryPx(),myOperators[0].myOutput.getRealPx(),centerY);
+            line(myOperators[0].myOutput.getRealPx(),myOperators[0].myOutput.getImaginaryPx(),myOperators[0].myOutput.getRealPx(),CENTER_Y);
 
 
             //horizontal projections...
             noStroke();
             fill(160,200,150);
-            ellipse(centerX,myOperators[0].myInput1.getImaginaryPx(),15,15);
-            ellipse(centerX,myOperators[0].myInput2.getImaginaryPx(),15,15);
+            ellipse(CENTER_X,myOperators[0].myInput1.getImaginaryPx(),15,15);
+            ellipse(CENTER_X,myOperators[0].myInput2.getImaginaryPx(),15,15);
 
             fill(100,200,100);
-            ellipse(centerX,myOperators[0].myOutput.getImaginaryPx(),15,15);
+            ellipse(CENTER_X,myOperators[0].myOutput.getImaginaryPx(),15,15);
 
             noFill();
             stroke(160,200,150);
-            line(myOperators[0].myInput1.getRealPx(),myOperators[0].myInput1.getImaginaryPx(),centerX,myOperators[0].myInput1.getImaginaryPx());
-            line(myOperators[0].myInput2.getRealPx(),myOperators[0].myInput2.getImaginaryPx(),centerX,myOperators[0].myInput2.getImaginaryPx());
+            line(myOperators[0].myInput1.getRealPx(),myOperators[0].myInput1.getImaginaryPx(),CENTER_X,myOperators[0].myInput1.getImaginaryPx());
+            line(myOperators[0].myInput2.getRealPx(),myOperators[0].myInput2.getImaginaryPx(),CENTER_X,myOperators[0].myInput2.getImaginaryPx());
 
             stroke(100,200,100);
-            line(myOperators[0].myOutput.getRealPx(),myOperators[0].myOutput.getImaginaryPx(),centerX,myOperators[0].myOutput.getImaginaryPx());
+            line(myOperators[0].myOutput.getRealPx(),myOperators[0].myOutput.getImaginaryPx(),CENTER_X,myOperators[0].myOutput.getImaginaryPx());
 
             //DRO
             textAlign(RIGHT,CENTER);
@@ -318,7 +318,7 @@ function runTutorial() {
 
     //places a dot on the board
     if(myLevels[level].targetDot){
-        mouseRadius = sqrt((dist(mouseX,mouseY,centerX,centerY)/globalScale)*(dist(mouseX,mouseY,centerX,centerY)/globalScale));
+        mouseRadius = sqrt((dist(mouseX,mouseY,CENTER_X,CENTER_Y)/globalScale)*(dist(mouseX,mouseY,CENTER_X,CENTER_Y)/globalScale));
         fill(0,255,0,100);
         ellipse(axisToPixelX(myLevels[level].outputTargetX),
 		axisToPixelY(myLevels[level].outputTargetY),
@@ -437,27 +437,27 @@ var compareY = 400;
 //make arcs that measure the angles of the multiplier inputs...
 function makeWedges(){
 
-    input1Angle = atan2((axisToPixelY(myOperators[0].myInput1.imaginary)-centerY),(axisToPixelX(myOperators[0].myInput1.real)-centerX));
-    input2Angle = atan2((axisToPixelY(myOperators[0].myInput2.imaginary)-centerY),(axisToPixelX(myOperators[0].myInput2.real)-centerX));
+    input1Angle = atan2((axisToPixelY(myOperators[0].myInput1.imaginary)-CENTER_Y),(axisToPixelX(myOperators[0].myInput1.real)-CENTER_X));
+    input2Angle = atan2((axisToPixelY(myOperators[0].myInput2.imaginary)-CENTER_Y),(axisToPixelX(myOperators[0].myInput2.real)-CENTER_X));
 
 
     noFill();
     strokeWeight(globalScale/15);
     strokeCap(SQUARE);
     stroke(255,100,0,100);
-    arc(centerX,centerY,globalScale/2,globalScale/2,input1Angle,0);
+    arc(CENTER_X,CENTER_Y,globalScale/2,globalScale/2,input1Angle,0);
     stroke(255,200,0,100);
-    arc(centerX,centerY,globalScale/3,globalScale/3,input2Angle,0);
+    arc(CENTER_X,CENTER_Y,globalScale/3,globalScale/3,input2Angle,0);
     stroke(255,0,0,100);
-    arc(centerX,centerY,2*globalScale/3,2*globalScale/3,input1Angle+input2Angle,0);
+    arc(CENTER_X,CENTER_Y,2*globalScale/3,2*globalScale/3,input1Angle+input2Angle,0);
 
 }
 
 //a visual readout that shows how angles add...
 function compareWedges(){
 
-    input1Angle = atan2((axisToPixelY(myOperators[0].myInput1.imaginary)-centerY),(axisToPixelX(myOperators[0].myInput1.real)-centerX));
-    input2Angle = atan2((axisToPixelY(myOperators[0].myInput2.imaginary)-centerY),(axisToPixelX(myOperators[0].myInput2.real)-centerX));
+    input1Angle = atan2((axisToPixelY(myOperators[0].myInput1.imaginary)-CENTER_Y),(axisToPixelX(myOperators[0].myInput1.real)-CENTER_X));
+    input2Angle = atan2((axisToPixelY(myOperators[0].myInput2.imaginary)-CENTER_Y),(axisToPixelX(myOperators[0].myInput2.real)-CENTER_X));
 
     noFill();
     stroke(200);
@@ -554,15 +554,15 @@ function transformOverlay(){
         //if it's a multiplier
         }else{
 
-            scaleFactor = sqrt((dist(mouseX,mouseY,centerX,centerY)/globalScale)*(dist(mouseX,mouseY,centerX,centerY)/globalScale))/anchorRadius;
-            offsetTheta = atan2(mouseY-centerY,mouseX-centerX)-anchorTheta;
+            scaleFactor = sqrt((dist(mouseX,mouseY,CENTER_X,CENTER_Y)/globalScale)*(dist(mouseX,mouseY,CENTER_X,CENTER_Y)/globalScale))/anchorRadius;
+            offsetTheta = atan2(mouseY-CENTER_Y,mouseX-CENTER_X)-anchorTheta;
 
             push();
 
                 fill(255,0,0,bgAlpha);
                 rect(0,0,width,height);
 
-                translate(centerX,centerY);
+                translate(CENTER_X,CENTER_Y);
                 rotate(offsetTheta);
                 scale(scaleFactor);
 
@@ -650,8 +650,8 @@ function tutorialClick(){
             anchorY = mouseY;
         //if operator is a multiplier
         }else{
-            anchorRadius = sqrt((dist(mouseX,mouseY,centerX,centerY)/globalScale)*(dist(mouseX,mouseY,centerX,centerY)/globalScale));
-            anchorTheta = atan2(mouseY-centerY,mouseX-centerX);
+            anchorRadius = sqrt((dist(mouseX,mouseY,CENTER_X,CENTER_Y)/globalScale)*(dist(mouseX,mouseY,CENTER_X,CENTER_Y)/globalScale));
+            anchorTheta = atan2(mouseY-CENTER_Y,mouseX-CENTER_X);
         }
     }
 

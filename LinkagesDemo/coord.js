@@ -9,8 +9,8 @@ class Coord {
     getY() { return this.y; }
     getImaginary() { return this.y }
 
-    getXPx() { return (this.x * GLOBAL_SCALE) + CENTER_X; }
-    getYPx() { return CENTER_Y - (this.y * GLOBAL_SCALE); }
+    getXPx() { return (this.x * globalScale) + CENTER_X; }
+    getYPx() { return CENTER_Y - (this.y * globalScale); }
     
     getR() { return sqrt(this.x*this.x + this.y*this.y); }
     getTh() { return atan2(this.y, this.x); }
@@ -100,29 +100,29 @@ class Coord {
 function pixelToAxis(coord) {
     let x = coord.getX();
     let y = coord.getY();
-    return new Coord((x - CENTER_X) / GLOBAL_SCALE, (CENTER_Y - y) / GLOBAL_SCALE);
+    return new Coord((x - CENTER_X) / globalScale, (CENTER_Y - y) / globalScale);
 }
 
 function axisToPixel(coord) {
     let x = coord.getX();
     let y = coord.getY();
-    return new Coord((x * GLOBAL_SCALE) + CENTER_X, CENTER_Y - (y * GLOBAL_SCALE));
+    return new Coord((x * globalScale) + CENTER_X, CENTER_Y - (y * globalScale));
 }
 
 function pixelToAxisX(coord) {
-    return (coord - centerX) / globalScale;
+    return (coord - CENTER_X) / globalScale;
 }
 
 function pixelToAxisY(coord) {
-    return (centerY - coord) / globalScale;
+    return (CENTER_Y - coord) / globalScale;
 }
 
 function axisToPixelX(coord) {
-    return (coord * globalScale) + centerX;
+    return (coord * globalScale) + CENTER_X;
 }
 
 function axisToPixelY(coord) {
-    return centerY - (coord * globalScale);
+    return CENTER_Y - (coord * globalScale);
 }
 
 function getMouse() {

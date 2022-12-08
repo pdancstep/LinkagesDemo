@@ -15,13 +15,12 @@ const iterations = 100;
 const updateCycles = 3;
 
 //center coords.
-const centerX = 650;
 const CENTER_X = 650;
-const centerY = 450;
 const CENTER_Y = 450;
+
 //global scale (standard, 50px = 1 unit)
-var globalScale = 50;
-const GLOBAL_SCALE = 50;
+const DEFAULT_SCALE = 50;
+var globalScale = DEFAULT_SCALE;
 
 //double tap reference (sketch level)
 var tappedOnce = false;
@@ -73,8 +72,8 @@ function draw() {
             strokeWeight(1);
             stroke(75);
             noFill();
-            line(CENTER_X+i*GLOBAL_SCALE, 0, CENTER_X+i*GLOBAL_SCALE, height);
-            line(0, CENTER_Y+i*GLOBAL_SCALE, width, CENTER_Y+i*GLOBAL_SCALE);
+            line(CENTER_X+i*globalScale, 0, CENTER_X+i*globalScale, height);
+            line(0, CENTER_Y+i*globalScale, width, CENTER_Y+i*globalScale);
         }
         
         //axes,unit circle
@@ -83,7 +82,7 @@ function draw() {
         strokeWeight(1);
         line(0, CENTER_Y, width, CENTER_Y);
         line(CENTER_X, 0, CENTER_X ,height);
-        ellipse(CENTER_X, CENTER_Y, 2*GLOBAL_SCALE, 2*GLOBAL_SCALE); // unit circle
+        ellipse(CENTER_X, CENTER_Y, 2*globalScale, 2*globalScale); // unit circle
     }
     
     //draw operators
@@ -98,11 +97,11 @@ function draw() {
         for (i=-30; i<30; i++){
             fill(150);
             noStroke();
-            ellipse(CENTER_X+i*GLOBAL_SCALE, CENTER_Y, 5, 5);
-            ellipse(CENTER_X, CENTER_Y+i*GLOBAL_SCALE, 5, 5);
+            ellipse(CENTER_X+i*globalScale, CENTER_Y, 5, 5);
+            ellipse(CENTER_X, CENTER_Y+i*globalScale, 5, 5);
             if(!supressCoords){
-                text(i, CENTER_X+i*GLOBAL_SCALE, CENTER_Y-16);
-                text(-i+"i", CENTER_X-20, CENTER_Y+i*GLOBAL_SCALE);
+                text(i, CENTER_X+i*globalScale, CENTER_Y-16);
+                text(-i+"i", CENTER_X-20, CENTER_Y+i*globalScale);
             }
         }
     }

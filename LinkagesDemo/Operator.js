@@ -406,7 +406,7 @@ class Operator {
 
 		strokeWeight(1);
 		beginShape();
-		vertex(centerX,centerY);
+		vertex(CENTER_X, CENTER_Y);
 		vertex(this.myInput1.getXPx(), this.myInput1.getYPx());
 		vertex(this.myOutput.getXPx(), this.myOutput.getYPx());
 		vertex(this.myInput2.getXPx(), this.myInput2.getYPx());
