@@ -18,7 +18,7 @@ const INPUT1 = 1;
 const INPUT2 = 2;
 
 class Operator {
-    constructor(type) {
+    constructor(type, idx) {
 	this.type = type;
 
 	if (this.type == ADDER) {
@@ -39,7 +39,7 @@ class Operator {
 
 	// index in myOperators. used for convenience when checking if a
 	// search for free nodes has visited this operator before
-	this.myindex = registerOperator(this);
+	this.myindex = idx;
 
         this.hidden = false;
     }

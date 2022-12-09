@@ -2,8 +2,8 @@ class Composite extends Operator {
     // comps - array of component operators
     // args - 3 numbers that are to be input and output nodes for the combined operator
     // bound -  which element of args is the bound node? this should be 0, 1, or 2
-    constructor(comps, args, bound) {
-	super(COMPOSITE);
+    constructor(comps, args, bound, idx) {
+	super(COMPOSITE, idx);
 
 	// hide internal operators
         this.internal = comps;
