@@ -17,6 +17,12 @@ class Solver {
         this.sensitivity = sens;
     }
 
+    solve() {
+        for (i=0; i<iterations; i++) {
+            this.iterate();
+        }
+    }
+    
     iterate() {
         if (this.relation==ADDER) { this.iterateSum(); }
         else if (this.relation==MULTIPLIER) { this.iterateProd(); }

@@ -15,9 +15,13 @@ class Number extends Coord {
 
         registerNode(this);
 
-        this.delta = 0;
+        this.delta = new Coord(0,0);
     }
 
+    applyDifferential() {
+        // this.mut_translate(this.delta);
+    }
+    
     isFree() {
         return this.free;
     }
@@ -35,7 +39,7 @@ class Number extends Coord {
         
         if (this.free && this.checkMouseover()) {
 	    this.dragging = true;
-            this.delta = 1;
+            this.delta = new Coord(1,0);
 	}
 	return this.dragging;
     }
@@ -43,7 +47,7 @@ class Number extends Coord {
     // release mouse
     notifyRelease() {
 	this.dragging = false;
-        this.delta = 0;
+        this.delta = new Coord(0,0);
     }
 
     // if we're dragging this point, move its location to the mouse's location
@@ -104,6 +108,12 @@ class Number extends Coord {
 	if (this.free){
 	    this.drawRing();
 	}
+
+        if (showDifferentials) {
+            fill(255);
+            noStroke();
+            text(this.delta.toString(), this.getXPx()+10, this.getYPx()-20);
+        }
     }
     
     // display this node in reversing-mode style

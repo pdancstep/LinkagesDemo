@@ -57,25 +57,44 @@ class Coord {
     
     multiply(vector) {
 	let r = this.getR() * vector.getR();
-	let th = this.getTh + vector.getTh();
+	let th = this.getTh() + vector.getTh();
 
 	return new Coord(r * cos(th), r * sin(th));
     }
 
     mut_multiply(vector) {
         let r = this.getR() * vector.getR();
-	let th = this.getTh + vector.getTh();
+	let th = this.getTh() + vector.getTh();
         this.x = r * cos(th);
         this.y = r * sin(th);
         return this;
     }
 
+    divide(vector) {
+	let r = this.getR() / vector.getR();
+	let th = this.getTh() - vector.getTh();
+
+	return new Coord(r * cos(th), r * sin(th));
+    }
+
+    mut_divide(vector) {
+        let r = this.getR() / vector.getR();
+	let th = this.getTh() - vector.getTh();
+        this.x = r * cos(th);
+        this.y = r * sin(th);
+        return this;        
+    }
+    
     mut_sendTo(vector) {
         this.x = vector.getX();
         this.y = vector.getY();
         return this;
     }
 
+    toString() {
+        return "(" + nfc(this.x,1) + ", " + nfc(this.y,1) + "i)";
+    }
+    
     isOrigin() {
 	return (this.x == 0 && this.y == 0);
     }

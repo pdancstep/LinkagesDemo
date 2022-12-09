@@ -139,7 +139,7 @@ class Operator {
 	    (this.mode == REVERSE1 && this.myInput1.checkMouseover()) ||
 	    (this.mode == REVERSE2 && this.myInput2.checkMouseover()) ||
 	    (this.mode == COLLAPSED && this.myOutput.checkMouseover()) ||
-	    (this.mode == REVCOLLAPSED && this.myInput1.checkmouseover())) {
+	    (this.mode == REVCOLLAPSED && this.myInput1.checkMouseover())) {
 
 	    // find potential free nodes to take control from
 	    let visits = myOperators.map(_ => false);
@@ -254,10 +254,8 @@ class Operator {
 		this.myOutput.update();
 	}
 
-        let s = new Solver(this, 1);
-	for (i=0; i<iterations; i++){
-            s.iterate();            
-	}
+        let s = new DifferentialSolver(this, 1);
+        s.solve();
     }
 
     // if node1 and node2 are both arguments, switch to appropriate collapsed mode

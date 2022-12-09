@@ -7,6 +7,9 @@ const searchSize = .1;
 //how many iterations to run before updating
 const iterations = 100;
 
+// how many adjustment iterations to run after automatic differentiation
+const DIFF_ITERS = 100;
+
 //extra number of loops for updating positions, helps with rigidity
 const updateCycles = 3;
 
@@ -35,3 +38,6 @@ var indicatorFlash = false;
 
 //turns off cartesian coordinates when focusing on polar coordinates
 var supressCoords = false;
+
+// show little derivatives near nodes
+var showDifferentials = true;
