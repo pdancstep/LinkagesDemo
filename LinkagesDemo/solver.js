@@ -1,5 +1,8 @@
 class Solver {
     constructor(oper, sens) {
+        this.input1 = oper.myInput1;
+        this.input2 = oper.myInput2;
+        this.output = oper.myOutput;
         this.r1 = oper.myInput1.getReal();
 	this.i1 = oper.myInput1.getImaginary();
 	this.r2 = oper.myInput2.getReal();
@@ -17,6 +20,12 @@ class Solver {
     iterate() {
         if (this.relation==ADDER) { this.iterateSum(); }
         else if (this.relation==MULTIPLIER) { this.iterateProd(); }
+        this.input1.x = this.r1;
+        this.input1.y = this.i1;
+        this.input2.x = this.r2;
+        this.input2.y = this.i2;
+        this.output.x = this.rout;
+        this.output.y = this.iout;
     }
 
     iterateSum() {

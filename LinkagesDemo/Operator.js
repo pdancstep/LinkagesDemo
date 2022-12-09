@@ -258,13 +258,6 @@ class Operator {
 	for (i=0; i<iterations; i++){
             s.iterate();            
 	}
-        
-        this.myInput1.x = s.r1;
-        this.myInput1.y = s.i1;
-        this.myInput2.x = s.r2;
-        this.myInput2.y = s.i2;
-        this.myOutput.x = s.rout;
-        this.myOutput.y = s.iout;
     }
 
     // if node1 and node2 are both arguments, switch to appropriate collapsed mode
