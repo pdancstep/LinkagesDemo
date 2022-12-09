@@ -72,50 +72,6 @@ class Operator {
 		this.myOutput.checkMouseover());
     }
 
-    //checks to see if mouse is over any free nodes
-    notifyClick() {
-        // can't click on a hidden operator
-        if (this.hidden) { return false; }
-        
-        switch (this.mode) {
-	case DEFAULT:
-	    this.dragging
-		=  this.myInput1.notifyClick()
-		|| this.myInput2.notifyClick();
-	    return this.dragging;
-	case REVERSE1:
-	    this.dragging
-		=  this.myInput2.notifyClick()
-		|| this.myOutput.notifyClick();
-	    return this.dragging;
-	case REVERSE2:
-	    this.dragging
-		=  this.myInput1.notifyClick()
-		|| this.myOutput.notifyClick();
-	    return this.dragging;
-	case COLLAPSED:
-	    this.dragging = this.myInput1.notifyClick();
-	    return this.dragging;
-	case REVCOLLAPSED:
-	case IDENTITY1:
-	case IDENTITY2:
-	    this.dragging = this.myOutput.notifyClick();
-	    return this.dragging;
-	default:
-	    // should not get here
-	    return false;
-	}
-    }
-
-    // release mouse
-    notifyRelease() {
-	this.myInput1.notifyRelease();
-	this.myInput2.notifyRelease();
-	this.myOutput.notifyRelease();
-	
-	this.dragging = false;
-    }
-
     // send information about free nodes originating from this operator
     // to the global freeNodes & freeNodePaths arrays
     // visited: array of booleans corresponding to myOperators
@@ -179,11 +135,11 @@ class Operator {
 
 	// reverse only if user is clicking on the dependent node
 	// (dependent node in IDENTITY modes cannot be reversed)
-	if ((this.mode == DEFAULT && this.myOutput.mouseover) ||
-	    (this.mode == REVERSE1 && this.myInput1.mouseover) ||
-	    (this.mode == REVERSE2 && this.myInput2.mouseover) ||
-	    (this.mode == COLLAPSED && this.myOutput.mouseover) ||
-	    (this.mode == REVCOLLAPSED && this.myInput1.mouseover)) {
+	if ((this.mode == DEFAULT && this.myOutput.checkMouseover()) ||
+	    (this.mode == REVERSE1 && this.myInput1.checkMouseover()) ||
+	    (this.mode == REVERSE2 && this.myInput2.checkMouseover()) ||
+	    (this.mode == COLLAPSED && this.myOutput.checkMouseover()) ||
+	    (this.mode == REVCOLLAPSED && this.myInput1.checkmouseover())) {
 
 	    // find potential free nodes to take control from
 	    let visits = myOperators.map(_ => false);

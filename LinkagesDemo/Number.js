@@ -11,10 +11,11 @@ class Number extends Coord {
         this.controller = this.free ? false : op;	    
 
         this.dragging = false;
-        this.mouseover = false;
         this.hidden = false;
 
         registerNode(this);
+
+        this.delta = 0;
     }
 
     isFree() {
@@ -25,23 +26,16 @@ class Number extends Coord {
     checkMouseover() {
         if (this.hidden) { return false; }
         
-        this.mouseover = getMousePx().distance(axisToPixel(this)) < 25;
-	return this.mouseover;
+	return this.isNearPx(getMousePx(), 25);
     }
 
-    // check if this node is within tolerancePx pixels of the given point
-    isWithinPx(targetX, targetY, tolerancePx) {
-	return (dist(this.getXPx(), this.getYPx(),
-		     axisToPixelX(targetX), axisToPixelY(targetY)) < tolerancePx);
-    }
-
-    // tell the number that it has been clicked on.
-    // returns the current dragging state
+    // tell the number that a click has been initiated
     notifyClick() {
         if (this.hidden) { return false; }
         
-        if (this.mouseover && this.free) {
+        if (this.free && this.checkMouseover()) {
 	    this.dragging = true;
+            this.delta = 1;
 	}
 	return this.dragging;
     }
@@ -49,6 +43,7 @@ class Number extends Coord {
     // release mouse
     notifyRelease() {
 	this.dragging = false;
+        this.delta = 0;
     }
 
     // if we're dragging this point, move its location to the mouse's location
@@ -56,7 +51,7 @@ class Number extends Coord {
 	if (this.dragging){
 	    this.x = getMouse().getX();
 	    this.y = getMouse().getY();
-	}	
+	}
     }
 
     //updates for operator with inputs locked on x,y axes, for cartesian coordinates.

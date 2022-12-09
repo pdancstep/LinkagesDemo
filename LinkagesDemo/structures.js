@@ -9,12 +9,7 @@ var reversingOperator = false;
 
 function registerNode(node) {
     myNumbers.push(node);
-}
-
-function registerOperator(oper) {
-    let i = myOperators.length;
-    myOperators.push(oper);
-    return i;
+    return node;
 }
 
 function findMerge() {

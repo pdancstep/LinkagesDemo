@@ -21,7 +21,6 @@ function draw() {
     // so they have a chance to react to each other
     for (m=0; m<updateCycles; m++){
 	for (const oper of myOperators) {
-	    oper.checkMouseover();
 	    oper.update();
 	}
     }
@@ -96,8 +95,10 @@ function touchStarted() {
         tappedOnce = false;
     }
 
-    for (const oper of myOperators) {
-        oper.notifyClick();
+    for (const n of myNumbers) {
+        if (n.notifyClick()) {
+            break;
+        }
     }
 
     //update tutorial...
@@ -111,7 +112,7 @@ function touchMoved() {
 
 function touchEnded(){
     pressAndHold = false;
-    for (const oper of myOperators){
-	oper.notifyRelease();
+    for (const n of myNumbers){
+	n.notifyRelease();
     }
 }
