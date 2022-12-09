@@ -19,7 +19,7 @@ class Number extends Coord {
     }
 
     applyDifferential() {
-        // this.mut_translate(this.delta);
+        this.mut_translate(this.delta);
     }
     
     isFree() {

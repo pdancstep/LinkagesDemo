@@ -8,7 +8,7 @@ const searchSize = .1;
 const iterations = 100;
 
 // how many adjustment iterations to run after automatic differentiation
-const DIFF_ITERS = 100;
+const DIFF_ITERS = 10;
 
 //extra number of loops for updating positions, helps with rigidity
 const updateCycles = 3;
