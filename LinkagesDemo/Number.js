@@ -1,5 +1,5 @@
 class Number extends Coord {
-    constructor(x, y, op, free) {
+    constructor(x, y, op, free, data = {}) {
         // position of point
         super(x,y);
         
@@ -16,6 +16,8 @@ class Number extends Coord {
         registerNode(this);
 
         this.delta = new Coord(0,0);
+
+        this.data = data;
     }
 
     applyDifferential() {
