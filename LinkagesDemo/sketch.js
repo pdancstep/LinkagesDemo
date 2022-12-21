@@ -51,9 +51,8 @@ function draw() {
 	    node.freeNodeDisplay();
 	}
     }
-
     //make tutorials run on top of this interactive canvas...
-    runTutorial();
+    //    runTutorial();
 }
 
 function keyPressed(){
@@ -102,7 +101,7 @@ function touchStarted() {
     }
 
     //update tutorial...
-    tutorialClick();
+    // tutorialClick();
 }
 
 function touchMoved() {
