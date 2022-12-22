@@ -6,6 +6,7 @@ class Graph { // :Graph<T>
         this.shadows = []; // :[index(graph)]
         this.edges = []; // :[Edge<T>]
         this.eq = eq; // :T -> T -> bool
+        this.history = [] // :[index(graph)]
     }
 
     // add a new vertex that is not connected to any relation
@@ -56,9 +57,49 @@ class Graph { // :Graph<T>
             return false;
         }        
         this.shadows[v2.id] = v1.id;
+        this.history.push(this.edges.length);
         this.edges.push(new Edge([v1, v2], new EqualityConstraint(this.eq)));
     }
 
+    // remove the most recently created unification involving vertex v
+    // returns true if disunification successful, false if not
+    disunify(v) { // :Vertex<T> -> bool
+        let vpr = this._getPrimary(v);
+        if (vpr===null || this.dependentAt(vpr.id)) {
+            return false;
+        }
+
+        for (let i=this.history.length-1; i>=0; i--) {
+            let e = this.edges[this.history[i]];
+            if (!e instanceof EqualityConstraint) {
+                continue;
+            }
+            
+            let p = e.positionOf(vpr);
+            // not sure if this "2nd try" is necessary, wrong, or neither
+            //if (p<0) {
+            //    p = e.positionOf(v);
+            //}
+            let v2 = null;
+            if (p==0) {
+                v2 = e.vertices[1];
+            } else if (p==1) {
+                v2 = e.vertices[0];
+            } else {
+                continue;
+            }
+            if (this.shadows[v2.id] == vpr.id) {
+                this.shadows[v2.id] = -1;
+            } else {
+                console.log("Warning: found unexpected shadow when disunifying vertices");
+            }
+            this.edges.splice(this.history[i], 1);
+            this.history.splice(i, 1);
+            return true;
+        }
+        return false;
+    }
+    
     // get the primary vertex representing a set of unified vertices 
     _getPrimary(v) { // :Vertex<T> -> Vertex<T>
         for (let i=0; i<this.shadows.length; i++) { // loop detection
@@ -72,6 +113,35 @@ class Graph { // :Graph<T>
             return v;
         }
     }
+
+    // returns vertices that could potentially become bound
+    // to allow this vertex to become free 
+    findLeaves(v) { // :Vertex<T> -> [Vertex<T>]
+        return []; 
+    }
+
+    // attempt to gain control of a vertex by giving up control of another vertex
+    // returns true if successful
+    invert(take, give) { // :Vertex<T> -> Vertex<T> -> bool
+        return false;
+    }
+    
+    // allow each edge to propogate changes
+    // iters - number of times to loop through edges
+    update(iters = 1) { // : count -> void
+        if (iters <=0) {
+            return;
+        }
+        let changed = false;
+        for (const e of this.edges) {
+            if (e._update(this.eq)) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            this.update(iters-1);
+        }
+    }
 }
 
 class Vertex { // :Vertex<T>
@@ -83,7 +153,7 @@ class Vertex { // :Vertex<T>
 
 class Edge { // :Edge<T>
     constructor(v, c) {
-        this.vertices = v; // :Array[Vertex<T>]
+        this.vertices = v; // :[Vertex<T>]
         this.constraint = c; // :Constraint<T>
     }
 
@@ -101,5 +171,30 @@ class Edge { // :Edge<T>
     // is the given position a bound/output position for this edge? 
     _dependentAt(i) { // :index(edge) -> bool
         return this.constraint.getDependencies()[i];
+    }
+
+    // invert this edge's constraint by exchanging free/bound status of two positions
+    // returns true if successful
+    _invert(take, give) { // :index(edge) -> index(edge) -> bool
+        return this.constraint.invert(take, give);
+    }
+
+    // use the constraint to update vertex data in bound positions
+    // returns true if any data was changed
+    // argument is the notion of equality by which changes are checked 
+    _update(eq) { // : (T -> T -> bool) -> bool
+        let data = [];
+        for (let i=0; i<this.vertices.length; i++) {
+            data.push(this.vertices[i].value);
+        }
+        let changed = false;
+        data = this.constraint.update(data);
+        for (let i=0; i<this.vertices.length; i++) {
+            if (!eq(this.vertices[i], data[i])) {
+                this.vertices[i].value = data[i];
+                changed = true;
+            }
+        }
+        return changed;
     }
 }
