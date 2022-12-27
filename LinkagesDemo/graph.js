@@ -1,12 +1,14 @@
+// graph structure that tracks free/bound dependency for multiple relations
 // (technically this structure is a directed hypergraph, not strictly a graph)  
-class Graph { // :Graph<T>
-    // eq - notion of equality for vertex data
+class RelGraph { // :RelGraph<T>
+    // eq :T -> T -> bool - notion of equality for vertex data
     constructor(eq = function(x,y) { return x===y; }) {
         this.vertices = []; // :[T]
-        this.shadows = []; // :[index(graph)]
+        this.shadows = []; // :[index(this.vertices)]
+        this.deps = [] // :[Tree<index(this.vertices) x index(this.edges)>]
         this.edges = []; // :[Edge<T>]
         this.eq = eq; // :T -> T -> bool
-        this.history = [] // :[index(graph)]
+        this.history = [] // :[index(this.edges)]
     }
 
     // add a new vertex that is not connected to any relation
@@ -15,6 +17,7 @@ class Graph { // :Graph<T>
         let v = new Vertex(datum, this.vertices.length);
         this.vertices.push(v);
         this.shadows.push(-1);
+        this.deps.push(new Tree([v.id, -1]));
         return v;
     }
 
@@ -22,13 +25,27 @@ class Graph { // :Graph<T>
     // returns the edge, or null if given data do not satisfy given constraint
     addRelated(data, constraint) { // :[T] -> Constraint<T> -> Edge<T>
         if (constraint.accepts(data)) {
+            // add all the needed vertices to the graph,
+            // recording the IDs for those in free positions
             let vs = []; // :[Vertex<T>]
+            let deps = constraint.getDependencies(); // :[bool]
+            let frees = []; // :[index(this.vertices)]
             for (let i=0; i<data.length; i++) {
                 let v = this.addFree(data[i]);
                 vs.push(v);
+                if (!deps[i]) {
+                    frees.push([v.id, this.edges.length]);
+                }
             }
+            // build the edge that captures the relation between the vertices
             let e = new Edge(vs, constraint);
             this.edges.push(e);
+            for (let i=0; i<this.vertices.length; i++) {
+                // vertices in bound positions note free positions as their dependencies
+                if (e._dependentAt(this.vertices[i])) {
+                    this.deps[i].setChildData(frees);
+                }
+            }
             return e;
         } else {
             return null;
@@ -36,17 +53,12 @@ class Graph { // :Graph<T>
     }
 
     // is this vertex in a bound position of any edge?
-    _dependentAt(idx) { // :index(graph) -> bool
-        for (const e of this.edges) {
-            let i = e.positionOf(this.vertices[idx]);
-            if (i>=0 && e._dependentAt(i)) {
-                return true;
-            }
-        }
+    _dependentAt(idx) { // :index(this.vertices) -> bool
+        return !this.deps[idx].isLeaf();
     }
 
     // link two vertices to the same datum by adding an equality relation
-    // the second argument is marked as shadowing the first argument
+    // the second argument is marked as a shadow of the first argument
     // (so that a UI implementation can hide it if desired)
     // returns true if unification successful, false if not
     unify(v1, v2) { // :Vertex<T> -> Vertex<T> -> bool
@@ -57,42 +69,43 @@ class Graph { // :Graph<T>
             return false;
         }        
         this.shadows[v2.id] = v1.id;
-        this.history.push(this.edges.length);
+        this.history.unshift(this.edges.length);
+        this.deps[vs.id] = new Tree([v1.id, this.edges.length]);
         this.edges.push(new Edge([v1, v2], new EqualityConstraint(this.eq)));
+        return true;
     }
 
     // remove the most recently created unification involving vertex v
     // returns true if disunification successful, false if not
     disunify(v) { // :Vertex<T> -> bool
         let vpr = this._getPrimary(v);
-        if (vpr===null || this.dependentAt(vpr.id)) {
+        if (vpr===null || this._dependentAt(vpr.id)) {
             return false;
         }
 
-        for (let i=this.history.length-1; i>=0; i--) {
+        for (let i=0; i<this.history.length; i++) {
             let e = this.edges[this.history[i]];
             if (!e instanceof EqualityConstraint) {
                 continue;
             }
-            
-            let p = e.positionOf(vpr);
+
+            // since we know e is an EqualityConstraint, p can only be -1, 0, or 1
+            let p = e.positionOf(vpr); // :index(e)
             // not sure if this "2nd try" is necessary, wrong, or neither
             //if (p<0) {
             //    p = e.positionOf(v);
             //}
-            let v2 = null;
-            if (p==0) {
-                v2 = e.vertices[1];
-            } else if (p==1) {
-                v2 = e.vertices[0];
-            } else {
-                continue;
-            }
+            
+            if (p<0) { continue; } // not the edge we're looking for
+            let v2 = e.vertices[1-p]; // :Vertex<T>
+
             if (this.shadows[v2.id] == vpr.id) {
                 this.shadows[v2.id] = -1;
             } else {
                 console.log("Warning: found unexpected shadow when disunifying vertices");
             }
+            this.deps[v2.id] = new Tree([v2.id, -1]);
+
             this.edges.splice(this.history[i], 1);
             this.history.splice(i, 1);
             return true;
@@ -116,31 +129,79 @@ class Graph { // :Graph<T>
 
     // returns vertices that could potentially become bound
     // to allow this vertex to become free 
-    findLeaves(v) { // :Vertex<T> -> [Vertex<T>]
-        return []; 
+    _leafDeps(id) { // :index(this.vertices) -> [index(this.vertices)]
+        if (this._dependentAt(id)) {
+            return this.deps[id].getLeafData().map(function(p) { return p[0]; });
+        } else {
+            return [];
+        }
+    }
+
+    _directDeps(id) { // :index(this.vertices) -> [index(this.vertices)]
+        if (this._dependentAt(id)) {
+            return this.deps[id].getChildData().map(function(p) { return p[0]; });
+        } else {
+            return [];
+        }
     }
 
     // attempt to gain control of a vertex by giving up control of another vertex
     // returns true if successful
     invert(take, give) { // :Vertex<T> -> Vertex<T> -> bool
-        return false;
-    }
-    
-    // allow each edge to propogate changes
-    // iters - number of times to loop through edges
-    update(iters = 1) { // : count -> void
-        if (iters <=0) {
-            return;
+        // check argument validity
+        take = this._getPrimary(take);
+        give = this._getPrimary(give);
+        if (take===null || give===null) {
+            return false;
         }
-        let changed = false;
-        for (const e of this.edges) {
-            if (e._update(this.eq)) {
-                changed = true;
+        if (!this._dependentAt(take.id)) {
+            return true; // already free, nothing to do
+        }
+        if (this._dependentAt(give.id)) {
+            return false; // can't give up control of an already-bound vertex
+        }
+
+        // check if inversion is possible
+        if (!this._leafDeps(take.id).includes(give.id)) {
+            // "give" vertex is not in the dependency tree for "take" vertex, can't invert
+            return false;
+        }
+
+        // "give" is an immediate dependency of "take", so we can try inverting directly
+        if (this._directDeps(id).includes(give.id)) {
+            let successes = []; // :index(this.edges)
+            // most of the time this loop amounts to just finding the single edge
+            // where the dependency is, and inverting that
+            for (let i=0; i<this.edges.length; i++) {
+                let e = this.edges[i];
+                
+                let idx_t = e.positionOf(take);
+                if (idx_t<0 || !e._dependentAt(idx_t)) {
+                    // vertex we're trying to take is absent or already free in this edge
+                    continue;
+                }
+                let idx_g = e.positionOf(give);
+                if (idx_g<0 || e.dependentAt(idx_g)) {
+                    // should not get here, since dependency is supposed to be direct
+                    return false;
+                }
+
+                let result = e._invert(idx_t, idx_g);
+                if (result) {
+                    successes.push(i);
+                } else { // failed to invert, unwind previous successes and report failure
+                    while (successes.length>0) {
+                        this.edges[successes.pop()]._invert(idx_g, idx_t);
+                    }
+                    break;
+                }
             }
+            // we successfully inverted something! go home
+            if (success.length>0) { return true; }
         }
-        if (changed) {
-            this.update(iters-1);
-        }
+        
+        // indirect dependency: need to find an intermediate vertex to invert through
+        // TODO
     }
 }
 
@@ -173,6 +234,17 @@ class Edge { // :Edge<T>
         return this.constraint.getDependencies()[i];
     }
 
+    _getFreeVertices() { // :-> [Vertex<T>]
+        let deps = this.constraint.getDependencies();
+        let free = [];
+        for (let i=0; i<this.vertices.length; i++) {
+            if (!deps[i]) {
+                free.push(this.vertices[i]);
+            }
+        }
+        return free;
+    }
+    
     // invert this edge's constraint by exchanging free/bound status of two positions
     // returns true if successful
     _invert(take, give) { // :index(edge) -> index(edge) -> bool

@@ -21,6 +21,9 @@ class Constraint { // :Constraint<T>
 
     // exchange free/bound status of two positions
     // returns true if successful
+    // note: we want all constraint classes to have the property that
+    //       if invert(a,b) succeeds than a subsequent invert(b,a) will also succeed
+    //       (we probably also want it to give back the original constraint)
     invert(take, give) { // : index(edge) -> index(edge) -> bool
         if (take==give) { return false; }
         if (take >= this.arity || give >= this.arity) { return false;}
@@ -77,7 +80,7 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
     }
 }
 
-class BinaryConstraint extends Constraint { // :Constraint<T>
+class OperatorConstraint extends Constraint { // :Constraint<T>
     constructor(op, invL, invR, eq) {
         this.op = op; // :T -> T -> T
         this.invL = invL; // :T -> T -> T
