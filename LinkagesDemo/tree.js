@@ -48,4 +48,11 @@ class Tree { // :Tree<T>
         this.children = ar.map(function(v) { return new Tree(v); });
         return this;
     }
+
+    // apply a function to each node's data
+    // returns the result as a new tree
+    map(f) { // :(T -> S) -> Tree<S>
+        let tree = new Tree(f(this.value));
+        return tree.setChildData(this.children.map(function(tr) { return tr.map(f); }));
+    }
 }

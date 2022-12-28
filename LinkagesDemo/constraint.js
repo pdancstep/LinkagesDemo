@@ -4,6 +4,11 @@ class Constraint { // :Constraint<T>
         this.arity = arity;
     }
 
+    // checks if two pieces of data are equal for purposes of this constraint
+    eq(dat1, dat2) {
+        return true;
+    }
+
     // checks if the given data exactly satisfies the constraint
     accepts(data) { // :[T] -> bool
         if (this.arity != data.length) {
