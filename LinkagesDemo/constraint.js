@@ -79,10 +79,10 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
 class OperatorConstraint extends Constraint { // :Constraint<T>
     constructor(op, invL, invR, eq,
                 check = function(a, b, c) { return eq(op(a,b), c); }) {
-        super(3);
-        this.op = op;       // :T -> T -> T
-        this.invL = invL;   // :T -> T -> T
-        this.invR = invR;   // :T -> T -> T
+        super(3);           //              |   a $ b = c
+        this.op = op;       // :T -> T -> T |  a -> b -> c
+        this.invL = invL;   // :T -> T -> T |  c -> b -> a
+        this.invR = invR;   // :T -> T -> T |  c -> a -> b
         this.eq = eq;       // :T -> T -> bool
         this.check = check; // :T -> T -> T -> bool
         this.bound = 2;     // :index
