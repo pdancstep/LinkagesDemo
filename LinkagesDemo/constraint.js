@@ -5,6 +5,10 @@ class Constraint { // :Constraint<T>
         this.arity = arity; // :index
     }
 
+    ///////////////////////////////////////
+    // methods that should be overridden //
+    ///////////////////////////////////////
+    
     // checks if two pieces of data are equal for purposes of this constraint
     eq(dat1, dat2) { // :T -> T -> bool
         return true;
@@ -12,7 +16,7 @@ class Constraint { // :Constraint<T>
 
     // checks if the given data exactly satisfies the constraint
     accepts(data) { // :[T] -> bool
-        return this.arity == data.length;
+        return this.checkArity(data);
     }
 
     // returns an array representation of the dependency structure of the relation
@@ -37,6 +41,14 @@ class Constraint { // :Constraint<T>
     // change data in dependent/bound positions to fit the requirements of this constraint
     update(data) { // :[T] -> [T]
         return data;
+    }
+
+    /////////////////////
+    // utility methods //
+    /////////////////////
+    
+    checkArity(data) { // :[T] -> bool
+        return this.arity == data.length;
     }
 }
 
@@ -77,23 +89,20 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
 }
 
 class OperatorConstraint extends Constraint { // :Constraint<T>
-    constructor(op, invL, invR, eq,
-                check = function(a, b, c) { return eq(op(a,b), c); }) {
-        super(3);           //              |   a $ b = c
-        this.op = op;       // :T -> T -> T |  a -> b -> c
-        this.invL = invL;   // :T -> T -> T |  c -> b -> a
-        this.invR = invR;   // :T -> T -> T |  c -> a -> b
-        this.eq = eq;       // :T -> T -> bool
-        this.check = check; // :T -> T -> T -> bool
-        this.bound = 2;     // :index
+    constructor(updaters, eq, check) {
+        super(updaters.length);
+        this.ops = updaters; // :[[T] -> T]
+        this.eq = eq;        // :T -> T -> bool
+        this.check = check;  // :[T] -> bool
+        this.bound = 2;      // :index
     }
 
     accepts(data) {
-        return super.accepts(data) && this.check(data[0], data[1], data[2]);
+        return super.accepts(data) && this.check(data);
     }
 
     getDependencies() {
-        let deps = [false, false, false];
+        let deps = super.getDependencies();
         deps[this.bound] = true;
         return deps;
     }
@@ -108,19 +117,7 @@ class OperatorConstraint extends Constraint { // :Constraint<T>
     }
 
     update(data) {
-        switch (this.bound) {
-        case 0:
-            data[0] = this.invL(data[2], data[1]);
-            break;
-        case 1:
-            data[1] = this.invR(data[2], data[0]);
-            break;
-        case 2:
-            data[2] = this.op(data[0], data[1]);
-            break;
-        default:
-            // should not get here
-        }
+        data[this.bound] = this.ops[this.bound](data);
         return data;
     }
 }

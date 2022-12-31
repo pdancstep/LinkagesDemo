@@ -116,6 +116,13 @@ class Coord {
     }
 }
 
+// alternate constructor for building a Coord with polar components
+class Polar extends Coord {
+    constructor(r, th) {
+        super(r * cos(th), r * sin(th));
+    }
+}
+
 function pixelToAxis(coord) {
     let x = coord.getX();
     let y = coord.getY();
