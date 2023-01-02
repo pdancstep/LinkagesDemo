@@ -68,8 +68,10 @@ class IterativeComplexAdder extends IdealComplexAdder { // :Constraint<Coord>
             break;
         case 1:
             data[1] = this.iterateDiff(data[2], data[0], data[1]);
+            break;
         case 2:
             data[2] = this.iterateSum(data[0], data[1], data[2]);
+            break;
         default:
             // should not get here
         }
@@ -118,8 +120,10 @@ class IterativeComplexMultiplier extends IdealComplexMultiplier { // :Constraint
             break;
         case 1:
             data[1] = this.iterateQuot(data[2], data[0], data[1]);
+            break;
         case 2:
             data[2] = this.iterateProd(data[0], data[1], data[2]);
+            break;
         default:
             // should not get here
         }
@@ -137,6 +141,11 @@ class IterativeComplexMultiplier extends IdealComplexMultiplier { // :Constraint
     }
 
     iterateQuot(z, zdiv, guess) {
+        // if dividing by 0, just move the quotient towards infinity
+        if (zdiv.isOrigin()) {
+            return guess.translate(new Polar(this.stepSize, guess.getTh()));
+        }
+        
         let quot = z.divide(zdiv);
         if (quot.isNear(guess, this.stepSize)) {
             return quot;
@@ -177,9 +186,9 @@ class IterativeComplexConjugator extends IdealComplexConjugator { // :Constraint
     }
 }
 
-///////////////////////////////////////////////////////////////////////
-// "differential" constraints that update with whatsitcalled
-///////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+// "differential" constraints that update with automatic differentiation //
+///////////////////////////////////////////////////////////////////////////
 
 //TODO
 // do we want some kind of resolution parameter? should there be two versions?

@@ -110,7 +110,7 @@ class RelGraph { // :RelGraph<T>
             if (this.vertices[p[0]].isFree()) {
                 deps.push(p);
             } else {
-                deps = deps.concat(this._leafDeps(i));
+                deps = deps.concat(this._leafDeps(this.vertices[p[0]]));
             }
         }
         return deps;
@@ -121,10 +121,10 @@ class RelGraph { // :RelGraph<T>
         let deps = [];
         for (const p of v.deps) {
             if (this.vertices[p[0]].isFree()) {
-                return [];
+                continue;
             } else {
                 deps.push(p);
-                deps = deps.concat(this._intermedDeps(i));
+                deps = deps.concat(this._intermedDeps(this.vertices[p[0]]));
             }
         }
         return deps;
@@ -139,9 +139,9 @@ class RelGraph { // :RelGraph<T>
     
     _unify(v1, v2) { // :Vertex<T> -> Vertex<T> -> Edge<T>
         this.history.unshift(this.edges.length); // history is LIFO
-        v2.deps.push([v1.id, this.edges.length]);
         let e = new Edge([v1, v2], new EqualityConstraint(this.eq));
         this.edges.push(e);
+        e.updateDependencies();
         return e;
     }
     
@@ -160,7 +160,7 @@ class RelGraph { // :RelGraph<T>
 
             let v2 = e.vertices[1-pos]; // :Vertex<T>
 
-            // we've found the unification to remove: e relates v1 with v2
+            // we've found the unification to remove: e relates v with v2
 
             // remove the undone unification from the history
             this.history.splice(i, 1);
@@ -188,8 +188,8 @@ class RelGraph { // :RelGraph<T>
         let idxE = take.bindingEdge(give);  // :index(this.edges)
         if (idxE>=0) {
             let e = this.edges[idxE];
-            let idxT = e.vertices.indexOf(take);
-            let idxG = e.vertices.indexOf(give);
+            let idxT = e.vertices.indexOf(take); // :index(e.vertices)
+            let idxG = e.vertices.indexOf(give); // :index(e.vertices)
             if (idxT<0 || !e.dependentAt(idxT) || // "take" should be present and bound
                 idxG<0 || e.dependentAt(idxT)) {  // "give" should be present and free
                 // should not get here, edge disagrees with vertex
@@ -293,7 +293,7 @@ class Edge { // :Edge<T>
         for (let v of this.vertices) {
             v.deps = v.deps.filter(function(p) { return p[1]!=this.id; }); 
         }
-        let free = this.getFreeVertices();
+        let free = this.getFreeVertices().map(function(i) { return [i, this.id]; });
         for (let v of this.getBoundVertices()) {
             v.deps = v.deps.concat(free.slice());
         }
@@ -314,10 +314,11 @@ class Edge { // :Edge<T>
     // argument is the notion of equality by which changes are checked 
     update(eq = this.constraint.eq) { // : (T -> T -> bool) -> bool
         let changed = false;
-        let data = this.constraint.update(this.vertices.slice());
+        let olddata = this.vertices.map(function (v) { return v.datum; });
+        let newdata = this.constraint.update(olddata);
         for (let i=0; i<this.vertices.length; i++) {
-            if (!eq(this.vertices[i], data[i])) {
-                this.vertices[i].value = data[i];
+            if (!eq(olddata[i], newdata[i])) {
+                this.vertices[i].datum = data[i];
                 changed = true;
             }
         }
