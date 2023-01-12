@@ -46,7 +46,7 @@ class RelGraph { // :RelGraph<T>
     // returns the new Edge, or null if unification could not be performed
     unify(v1, v2) { // :Vertex<T> -> Vertex<T> -> Edge<T>
         if (v1.isFree() && v2.isFree()) {
-            return  this._unify(v1, v2);
+            return this._unify(v1, v2);
         } else {
             return null; // can only unify free vertices
         }
