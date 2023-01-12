@@ -290,10 +290,11 @@ class Edge { // :Edge<T>
     }
 
     updateDependencies() { // :-> void
+        let id = this.id;
         for (let v of this.vertices) {
-            v.deps = v.deps.filter(function(p) { return p[1]!=this.id; }); 
+            v.deps = v.deps.filter(function(p) { return p[1]!=id; }); 
         }
-        let free = this.getFreeVertices().map(function(i) { return [i, this.id]; });
+        let free = this.getFreeVertices().map(function(i) { return [i, id]; });
         for (let v of this.getBoundVertices()) {
             v.deps = v.deps.concat(free.slice());
         }
@@ -314,11 +315,11 @@ class Edge { // :Edge<T>
     // argument is the notion of equality by which changes are checked 
     update(eq = this.constraint.eq) { // : (T -> T -> bool) -> bool
         let changed = false;
-        let olddata = this.vertices.map(function (v) { return v.datum; });
+        let olddata = this.vertices.map(function (v) { return v.value; });
         let newdata = this.constraint.update(olddata);
         for (let i=0; i<this.vertices.length; i++) {
             if (!eq(olddata[i], newdata[i])) {
-                this.vertices[i].datum = data[i];
+                this.vertices[i].value = data[i];
                 changed = true;
             }
         }

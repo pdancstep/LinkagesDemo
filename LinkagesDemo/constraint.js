@@ -94,7 +94,7 @@ class OperatorConstraint extends Constraint { // :Constraint<T>
         this.ops = updaters; // :[[T] -> T]
         this.eq = eq;        // :T -> T -> bool
         this.check = check;  // :[T] -> bool
-        this.bound = 2;      // :index
+        this.bound = updaters.length-1; // :index
     }
 
     accepts(data) {

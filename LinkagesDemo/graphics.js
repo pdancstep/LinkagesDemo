@@ -36,6 +36,7 @@ function drawGrid() {
 const CLEAR_BUTTON = new Coord(30, 30);
 const ADDER_BUTTON = new Coord(30, 60);
 const MULTR_BUTTON = new Coord(30, 90);
+const CONJ_BUTTON = new Coord(30, 120);
 
 function drawButtons() {
     textSize(15);
@@ -53,40 +54,23 @@ function drawButtons() {
     fill(255,100,0);
     ellipse(30,90,20,20);
     text("multiplier",45,90);
+
+    fill(30,30,200);
+    ellipse(30,120,20,20);
+    text("conjugator",45,120);
 }
 
 function printToPlot() {
     //On-canvas DRO for operators...
     textAlign(CENTER,CENTER);
     textSize(30);
-    
-    for (i=0; i<myOperators.length; i++){
-        fill(150);
-        let h = height - 40*(i+1);
-        
-        text("(" + round(myOperators[i].myInput1.getX()) +
-             "," + round(myOperators[i].myInput1.getY()) + "i)",
-             50, h);
 
-        if (myOperators[i].type==ADDER) {
-            text("+", 115, h);
-        }else{
-            text("x",115, h);
+    let h = height - 40;
+    for (i=0; i<mainGraph.edges.length; i++){
+        if (mainGraph.edges[i] instanceof LinkageOp) {
+            fill(150);
+            h = h - 40;
+            text(mainGraph.edges[i].toString(), 200, h);
         }
-
-        text("(" + round(myOperators[i].myInput2.getX()) +
-             "," + round(myOperators[i].myInput2.getY()) + "i)",
-             175, h);
-        
-        text("=", 230, h);
-        
-        if (myOperators[i].type==ADDER){
-            fill(30,200,255);
-        } else if (myOperators[i].type==MULTIPLIER) {
-            fill(255,0,0);
-        }
-        text("(" + round(myOperators[i].myOutput.getX()) +
-             "," + round(myOperators[i].myOutput.getY()) + "i)",
-             285, h);
     }
 }

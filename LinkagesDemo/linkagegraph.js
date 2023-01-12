@@ -7,16 +7,16 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     addOperation(type) {
         let vs = [];
         if (type==ADDER) {
-            vs.push(this.addFree(new Coord(0,0)));
-            vs.push(this.addFree(new Coord(0,0)));
-            vs.push(this.addFree(new Coord(0,0)));
+            vs.push(this.addFree(new LinkagePoint(0,0,true)));
+            vs.push(this.addFree(new LinkagePoint(0,0,true)));
+            vs.push(this.addFree(new LinkagePoint(0,0,false)));
         } else if (type==MULTIPLIER) {
-            vs.push(this.addFree(new Coord(1,0)));
-            vs.push(this.addFree(new Coord(1,0)));
-            vs.push(this.addFree(new Coord(1,0)));
+            vs.push(this.addFree(new LinkagePoint(1,0,true)));
+            vs.push(this.addFree(new LinkagePoint(1,0,true)));
+            vs.push(this.addFree(new LinkagePoint(1,0,false)));
         } else if (type==CONJUGATOR) {
-            vs.push(this.addFree(new Coord(0,1)));
-            vs.push(this.addFree(new Coord(0,-1)));
+            vs.push(this.addFree(new LinkagePoint(0,1,true)));
+            vs.push(this.addFree(new LinkagePoint(0,-1,false)));
         } else {
             return null;
         }
@@ -59,10 +59,11 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
 
     // returns the first vertex close to the cursor
     findMouseover() {
-        for (const v of this.vertices()) {
+        for (const v of this.vertices) {
             if (v.value.checkMouseover()) {
                 return v;
             }
         }
+        return null;
     }
 }

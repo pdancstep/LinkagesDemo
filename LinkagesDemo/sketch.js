@@ -1,5 +1,9 @@
+var mainGraph = null;
+var activeVertex = null;
+
 function setup() {
     createCanvas(1600,900);
+    mainGraph = new LinkageGraph();
 }
 
 function draw() {
@@ -16,23 +20,15 @@ function draw() {
   	    findMerge();
   	}
     }
-    
-    // update operators multiple times,
-    // so they have a chance to react to each other
-    for (m=0; m<updateCycles; m++){
-	for (const oper of myOperators) {
-	    oper.update();
-	}
-    }
+
+    mainGraph.update(updateCycles);
     
     background(indicator);
 
     drawGrid();
     
-    //draw operators
-    for (const oper of myOperators) {
-	oper.display();
-    }
+    mainGraph.display();
+
 
     drawButtons();
 
@@ -72,15 +68,21 @@ function touchStarted() {
         closeReversal();
     }
 
-    let i = myOperators.length;
     if (CLEAR_BUTTON.isNear(getMousePx(), 10)) {
-        myOperators = [];
+        mainGraph = new LinkageGraph();
+        return;
     }
     if (ADDER_BUTTON.isNear(getMousePx(), 10)) {
-        myOperators.push(new Operator(ADDER, i));
+        mainGraph.addOperation(ADDER);
+        return;
     }
     if (MULTR_BUTTON.isNear(getMousePx(), 10)) {
-        myOperators.push(new Operator(MULTIPLIER, i));
+        mainGraph.addOperation(MULTIPLIER);
+        return;
+    }
+    if (CONJ_BUTTON.isNear(getMousePx(), 10)) {
+        mainGraph.addOperation(CONJUGATOR);
+        return;
     }
 
     pressAndHold = true;
@@ -94,24 +96,27 @@ function touchStarted() {
         tappedOnce = false;
     }
 
-    for (const n of myNumbers) {
-        if (n.notifyClick()) {
-            break;
-        }
+    activeVertex = mainGraph.findMouseover();
+    if (activeVertex) {
+        activeVertex.value.notifyClick();
     }
-
+    
     //update tutorial...
     // tutorialClick();
 }
 
 function touchMoved() {
     pressAndHold = false;
+    if (activeVertex) {
+        activeVertex.value.update();
+    }
     return false;
 }
 
 function touchEnded(){
     pressAndHold = false;
-    for (const n of myNumbers){
-	n.notifyRelease();
+    if (activeVertex) {
+        activeVertex.value.notifyRelease();
+        activeVertex = null;
     }
 }
