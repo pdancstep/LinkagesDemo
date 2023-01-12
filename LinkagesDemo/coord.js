@@ -17,6 +17,8 @@ class Coord {
     getThDegrees() { return map(this.getTh(), -PI, PI, -180, 180); }
 
     translate(vector) {
+        // TODO: we can't make a new Coord if we're trying to use a subclass!
+        // may need a different approach rather than LinkagePoint class
 	return new Coord(this.x + vector.getX(), this.y + vector.getY());
     }
 

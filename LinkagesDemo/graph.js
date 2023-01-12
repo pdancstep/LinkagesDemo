@@ -267,7 +267,7 @@ class Edge { // :Edge<T>
         return this.constraint.getDependencies()[i];
     }
 
-    getFreeVertices() { // :-> [T]
+    getFreeVertices() { // :-> [Vertex<T>]
         let deps = this.constraint.getDependencies();
         let free = [];
         for (let i=0; i<this.vertices.length; i++) {
@@ -278,15 +278,15 @@ class Edge { // :Edge<T>
         return free;
     }
 
-    getBoundVertices() { // :-> [T]
+    getBoundVertices() { // :-> [Vertex<T>]
         let deps = this.constraint.getDependencies();
         let bound = [];
         for (let i=0; i<this.vertices.length; i++) {
             if (deps[i]) {
                 bound.push(this.vertices[i]);
             }
-            return bound;
         }
+        return bound;
     }
 
     updateDependencies() { // :-> void
@@ -294,7 +294,7 @@ class Edge { // :Edge<T>
         for (let v of this.vertices) {
             v.deps = v.deps.filter(function(p) { return p[1]!=id; }); 
         }
-        let free = this.getFreeVertices().map(function(i) { return [i, id]; });
+        let free = this.getFreeVertices().map(function(v) { return [v.id, id]; });
         for (let v of this.getBoundVertices()) {
             v.deps = v.deps.concat(free.slice());
         }
@@ -316,10 +316,10 @@ class Edge { // :Edge<T>
     update(eq = this.constraint.eq) { // : (T -> T -> bool) -> bool
         let changed = false;
         let olddata = this.vertices.map(function (v) { return v.value; });
-        let newdata = this.constraint.update(olddata);
+        let newdata = this.constraint.update(olddata.slice());
         for (let i=0; i<this.vertices.length; i++) {
             if (!eq(olddata[i], newdata[i])) {
-                this.vertices[i].value = data[i];
+                this.vertices[i].value = newdata[i];
                 changed = true;
             }
         }
