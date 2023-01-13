@@ -81,20 +81,20 @@ class IterativeComplexAdder extends IdealComplexAdder { // :Constraint<Coord>
     iterateSum(z1, z2, guess) {
         let sum = z1.translate(z2);
         if (sum.isNear(guess, this.stepSize)) {
-            return sum;
+            return guess.mut_sendTo(sum);
         } else {
             let theta = sum.subtract(guess).getTh();
-            return guess.translate(new Polar(this.stepSize, theta));
+            return guess.mut_translate(new Polar(this.stepSize, theta));
         }
     }
 
     iterateDiff(z, zsub, guess) {
         let diff = z.subtract(zsub);
         if (diff.isNear(guess, this.stepSize)) {
-            return diff;
+            return guess.mut_sendTo(diff);
         } else {
             let theta = diff.subtract(guess).getTh();
-            return guess.translate(new Polar(this.stepSize, theta));
+            return guess.mut_translate(new Polar(this.stepSize, theta));
         }
     }
 }
@@ -133,25 +133,25 @@ class IterativeComplexMultiplier extends IdealComplexMultiplier { // :Constraint
     iterateProd(z1, z2, guess) {
         let prod = z1.multiply(z2);
         if (prod.isNear(guess, this.stepSize)) {
-            return prod;
+            return guess.mut_sendTo(prod);
         } else {
             let theta = prod.subtract(guess).getTh();
-            return guess.translate(new Polar(this.stepSize, theta));
+            return guess.mut_translate(new Polar(this.stepSize, theta));
         }
     }
 
     iterateQuot(z, zdiv, guess) {
         // if dividing by 0, just move the quotient towards infinity
         if (zdiv.isOrigin()) {
-            return guess.translate(new Polar(this.stepSize, guess.getTh()));
+            return guess.mut_translate(new Polar(this.stepSize, guess.getTh()));
         }
         
         let quot = z.divide(zdiv);
         if (quot.isNear(guess, this.stepSize)) {
-            return quot;
+            return guess.mut_sendTo(quot);
         } else {
             let theta = quot.subtract(guess).getTh();
-            return guess.translate(new Polar(this.stepSize, theta));
+            return guess.mut_translate(new Polar(this.stepSize, theta));
         }
     }
 }
@@ -178,10 +178,10 @@ class IterativeComplexConjugator extends IdealComplexConjugator { // :Constraint
     iterateConj(z, guess) {
         let conj = z.conjugate();
         if (conj.isNear(guess, this.stepSize)) {
-            return conj;
+            return guess.mut_sendTo(conj);
         } else {
             let theta = conj.subtract(guess).getTh();
-            return guess.translate(new Polar(this.stepSize, theta));
+            return guess.mut_translate(new Polar(this.stepSize, theta));
         }
     }
 }

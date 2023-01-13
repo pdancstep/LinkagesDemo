@@ -53,7 +53,7 @@ class LinkagePoint extends Coord {
     display(reversing = false) { // :bool -> void
         if (this.hidden) { return; }
 
-        if (reversing) { fill(255); }
+        if (reversing) { fill(255); } // this doesn't work, _drawNode sets a fill too!
         this._drawNode();
         
         if (!reversing && this.free) {

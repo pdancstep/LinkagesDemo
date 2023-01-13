@@ -30,6 +30,8 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
         this.hidden = false;
     }
 
+    // display connecting lines related to this operation
+    // note: does not draw the vertices themselves 
     display() {
         if (this.hidden) { return; }
         noFill();
@@ -42,6 +44,7 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             vertex(this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx());
             vertex(this.vertices[2].value.getXPx(), this.vertices[2].value.getYPx());
             vertex(this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
+            vertex(CENTER_X, CENTER_Y);
             endShape();
         } else if (this.type==MULTIPLIER) {
             stroke(255,0,0);
@@ -61,33 +64,23 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             line(this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx(),
                  this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
         } else {
-        }
-
-        for (const v of this.vertices) {
-            v.value.display();
+            // bad
         }
     }
 
     toString() {
         if (this.type==ADDER) {
-            return ("(" + round(this.vertices[0].value.getX()) +
-                    "," + round(this.vertices[0].value.getY()) + "i) + " +
-                    "(" + round(this.vertices[1].value.getX()) +
-                    "," + round(this.vertices[1].value.getY()) + "i) = " +
-                    "(" + round(this.vertices[2].value.getX()) +
-                    "," + round(this.vertices[2].value.getY()) + "i)")
+            return (this.vertices[0].value.toString(0) + " + " +
+                    this.vertices[1].value.toString(0) + " = " +
+                    this.vertices[2].value.toString(0));
         } else if (this.type==MULTIPLIER) {
-            return ("(" + round(this.vertices[0].value.getX()) +
-                    "," + round(this.vertices[0].value.getY()) + "i) x " +
-                    "(" + round(this.vertices[1].value.getX()) +
-                    "," + round(this.vertices[1].value.getY()) + "i) = " +
-                    "(" + round(this.vertices[2].value.getX()) +
-                    "," + round(this.vertices[2].value.getY()) + "i)");
+            return (this.vertices[0].value.toString(0) + " x " +
+                    this.vertices[1].value.toString(0) + " = " +
+                    this.vertices[2].value.toString(0));
         } else if (this.type==CONJUGATOR) {
-            return ("conj(" + round(this.vertices[0].value.getX()) +
-                    "," + round(this.vertices[0].value.getY()) + "i) = " +
-                    "(" + round(this.vertices[1].value.getX()) +
-                    "," + round(this.vertices[1].value.getY()) + "i)");
+            return ("conj" +
+                    this.vertices[0].value.toString(0) + " = " +
+                    this.vertices[1].value.toString(0));
         }
     }
 }

@@ -1,6 +1,6 @@
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor() {
-        super(function(z1,z2) { return ze.equals(z2); });
+        super(function(z1,z2) { return z1.equals(z2); });
     }
 
     // use this instead of addRelated

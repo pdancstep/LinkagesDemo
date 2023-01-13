@@ -98,7 +98,7 @@ function touchStarted() {
 
     activeVertex = mainGraph.findMouseover();
     if (activeVertex) {
-        activeVertex.value.notifyClick();
+        activeVertex.value.notifyClick(); // should probably check this returned true
     }
     
     //update tutorial...
