@@ -17,7 +17,7 @@ function draw() {
     //look for bind opportunities
     if(pressAndHold){
   	if((millis()-timerStart)>holdLength){
-  	    findMerge();
+  	    indicatorFlash = mainGraph.findUnify();
   	}
     }
 

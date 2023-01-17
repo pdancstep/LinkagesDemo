@@ -28,19 +28,10 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         return e;
     }
 
-    unify(v1, v2) {
-        if (v1.isFree() && v2.isFree()) {
-            v2.hidden = true;
-            return this._unify(v1, v2);
-        } else {
-            return null;
-        }
-    }
-
     // must provide the hidden vertex in order to resume display
     disunify(v) {
         if (this._disunify(v)) {
-            v.hidden = false;
+            v.value.hidden = false;
             return true;
         } else {
             return false;
@@ -72,14 +63,21 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         }
     }
 
-    // returns the first vertex close to the cursor
+    // returns the first free vertex close to the cursor
+    // if none, returns a bound vertex close to the cursor
+    // if no vertices are close to the cursor, returns null
     findMouseover() {
+        let result = null;
         for (const v of this.vertices) {
             if (v.value.checkMouseover()) {
-                return v;
+                if (v.isFree()) {
+                    return v;
+                } else {
+                    result = v;
+                }
             }
         }
-        return null;
+        return result;
     }
 
     startReversal() {
@@ -105,6 +103,22 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
             } else {
                 this.cancelReversal();
             }
+        }
+    }
+
+    findUnify() {
+        let v1 = this.findMouseover();
+        if (v1) {
+            v1.value.hidden = true;
+            let v2 = this.findMouseover();
+            if (v2 && this.unify(v2, v1)) {
+                return true;
+            } else {
+                v1.value.hidden = false;
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }

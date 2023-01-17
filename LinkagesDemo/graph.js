@@ -140,7 +140,7 @@ class RelGraph { // :RelGraph<T>
     
     _unify(v1, v2) { // :Vertex<T> -> Vertex<T> -> Edge<T>
         this.history.unshift(this.edges.length); // history is LIFO
-        let e = new Edge([v1, v2], new EqualityConstraint(this.eq));
+        let e = new Edge([v1, v2], new EqualityConstraint(this.eq), this.edges.length);
         this.edges.push(e);
         e.updateDependencies();
         return e;
@@ -291,11 +291,11 @@ class Edge { // :Edge<T>
     }
 
     updateDependencies() { // :-> void
-        let id = this.id;
+        let eid = this.id;
         for (let v of this.vertices) {
-            v.deps = v.deps.filter(function(p) { return p[1]!=id; }); 
+            v.deps = v.deps.filter(function(p) { return p[1]!=eid; }); 
         }
-        let free = this.getFreeVertices().map(function(v) { return [v.id, id]; });
+        let free = this.getFreeVertices().map(function(v) { return [v.id, eid]; });
         for (let v of this.getBoundVertices()) {
             v.deps = v.deps.concat(free.slice());
         }
