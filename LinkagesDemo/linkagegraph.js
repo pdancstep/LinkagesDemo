@@ -1,6 +1,7 @@
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor() {
         super(function(z1,z2) { return z1.equals(z2); });
+        this.focus = null;
     }
 
     // use this instead of addRelated
@@ -46,13 +47,27 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         }
     }
 
-    display() {
-        for (const v of this.vertices) {
-            v.value.display();
+    invert(take, give) {
+        if (super.invert(take, give)) {
+            take.value.free = true;
+            give.value.free = false;
+            return true;
+        } else {
+            return false;
         }
+    }
+    
+    display(reversing=false) {
         for (const e of this.edges) {
             if (e instanceof LinkageOp) {
                 e.display();
+            }
+        }
+        for (const v of this.vertices) {
+            if (reversing && this.focus && this.getDepends(this.focus).includes(v)) {
+                v.value.display(reversing);
+            } else {
+                v.value.display();
             }
         }
     }
@@ -65,5 +80,31 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
             }
         }
         return null;
+    }
+
+    startReversal() {
+        this.focus = this.findMouseover();
+        if (this.focus.isBound()) {
+            return true;
+        } else {
+            this.focus = null;
+            return false;
+        }
+        
+    }
+
+    cancelReversal() {
+        this.focus = null;
+    }
+
+    completeReversal() {
+        if (this.focus) {
+            let target = this.findMouseover();
+            if (target && this.invert(this.focus, target)) {
+                this.focus = null;
+            } else {
+                this.cancelReversal();
+            }
+        }
     }
 }

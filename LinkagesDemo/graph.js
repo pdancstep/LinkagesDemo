@@ -61,7 +61,8 @@ class RelGraph { // :RelGraph<T>
 
     // returns a list of vertices that should be able to invert with the given bound vertex
     getDepends(v) { // :Vertex<T> -> [Vertex<T>]
-        return this._leafDeps(v).map(function(p) { return this.vertices[p[0]]; });
+        let vs = this.vertices;
+        return this._leafDeps(v).map(function(p) { return vs[p[0]]; });
     }
     
     // attempt to gain control of a vertex by giving up control of another vertex
@@ -191,7 +192,7 @@ class RelGraph { // :RelGraph<T>
             let idxT = e.vertices.indexOf(take); // :index(e.vertices)
             let idxG = e.vertices.indexOf(give); // :index(e.vertices)
             if (idxT<0 || !e.dependentAt(idxT) || // "take" should be present and bound
-                idxG<0 || e.dependentAt(idxT)) {  // "give" should be present and free
+                idxG<0 || e.dependentAt(idxG)) {  // "give" should be present and free
                 // should not get here, edge disagrees with vertex
                 console.log("Warning: Relational graph is out of sync with itself.");
                 return false;

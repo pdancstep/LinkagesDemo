@@ -26,11 +26,15 @@ function draw() {
     background(indicator);
 
     drawGrid();
-    
-    mainGraph.display();
-
-
     drawButtons();
+    
+    //display mode while alternative dependency...
+    if (reversingOperator){
+	background(0,150);
+    }
+
+    mainGraph.display(reversingOperator);
+
 
     //digital readout for existing operators
     printToPlot();
@@ -40,13 +44,6 @@ function draw() {
 	indicatorFlash = false;
     }
     
-    //display mode while alternative dependency...
-    if (reversingOperator){
-	background(0,150);
-	for (const node of freeNodes) {
-	    node.freeNodeDisplay();
-	}
-    }
     //make tutorials run on top of this interactive canvas...
     //    runTutorial();
 }
@@ -65,7 +62,9 @@ function keyPressed(){
 
 function touchStarted() {
     if (reversingOperator) {
-        closeReversal();
+        mainGraph.completeReversal();
+        reversingOperator = false;
+        return;
     }
 
     if (CLEAR_BUTTON.isNear(getMousePx(), 10)) {
@@ -92,7 +91,7 @@ function touchStarted() {
         tappedOnce = true;
         currentTime = millis();
     } else {
-        tryReversal();
+        reversingOperator = mainGraph.startReversal();
         tappedOnce = false;
     }
 

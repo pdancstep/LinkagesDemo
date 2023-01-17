@@ -37,9 +37,13 @@ class LinkagePoint extends Coord {
         }
     }
 
-    _drawNode() {
+    _drawNode(reversing = false) {
         noStroke();
-        fill(200, 255, 200);
+        if (reversing) {
+            fill(255);
+        } else {
+            fill(200, 255, 200);
+        }
         ellipse(this.getXPx(), this.getYPx(), 15, 15);
     }
 
@@ -53,10 +57,9 @@ class LinkagePoint extends Coord {
     display(reversing = false) { // :bool -> void
         if (this.hidden) { return; }
 
-        if (reversing) { fill(255); } // this doesn't work, _drawNode sets a fill too!
-        this._drawNode();
+        this._drawNode(reversing);
         
-        if (!reversing && this.free) {
+        if (this.free) {
             this._drawRing();
         }
     }
