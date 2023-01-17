@@ -2,12 +2,16 @@
 // (technically this structure is a directed hypergraph, not strictly a graph)  
 class RelGraph { // :RelGraph<T>
     // eq :T -> T -> bool - notion of equality for vertex data
-    constructor(eq = function(x,y) { return x===y; }) {
+    // cp :T -> T -> void - function that copies data from 1st arg to 2nd arg
+    //                      TODO: default for cp doesn't really make sense
+    constructor(eq = function(x,y) { return x===y; },
+                cp = function(xIn, xOut) { xOut = xIn; }) {
         this.vertices = []; // :[Vertex<T>]
         this.edges = []; // :[Edge<T>]
 
         // internal
         this.eq = eq; // :T -> T -> bool
+        this.cp = cp; // :T -> T -> void
         this.history = [] // :[index(this.edges)]
     }
 
@@ -103,7 +107,7 @@ class RelGraph { // :RelGraph<T>
     //////////////////////
     // internal methods //
     //////////////////////
-    
+
     // find free nodes in the given vertex's dependency tree
     _leafDeps(v) { // :Vertex<T> -> [index(this.vertices) x index(this.edges)]
         let deps = [];
@@ -140,7 +144,9 @@ class RelGraph { // :RelGraph<T>
     
     _unify(v1, v2) { // :Vertex<T> -> Vertex<T> -> Edge<T>
         this.history.unshift(this.edges.length); // history is LIFO
-        let e = new Edge([v1, v2], new EqualityConstraint(this.eq), this.edges.length);
+        let e = new Edge([v1, v2],
+                         new EqualityConstraint(this.eq, this.cp),
+                         this.edges.length);
         this.edges.push(e);
         e.updateDependencies();
         return e;
@@ -207,7 +213,7 @@ class RelGraph { // :RelGraph<T>
             }
         } else if (recur) {
             // try to find an intermediate vertex to invert through
-            for (const p of this._intermedDeps(take.id)) {
+            for (const p of this._intermedDeps(take)) {
                 // see if this vertex can invert with the target in one step
                 if (this._invert(this.vertices[p[0]], give, false)) {
                     // success! now do the rest

@@ -1,17 +1,13 @@
 class LinkagePoint extends Coord {
-    constructor(x, y, free) {
+    constructor(x, y) {
         // position of point
         super(x,y);
 
         // is this point user-moveable?
-        this.free = free;
+        this.canDrag = null;
 
         this.dragging = false;
         this.hidden = false;
-    }
-
-    isFree() { // :-> bool
-        return this.free;
     }
 
     checkMouseover() { // :-> bool
@@ -21,7 +17,11 @@ class LinkagePoint extends Coord {
 
     notifyClick() { // :-> bool
         if (this.hidden) { return false; }
-        if (this.free && this.checkMouseover()) {
+        if (this.canDrag) { // only call drag check method if it exists
+            if (this.canDrag() && this.checkMouseover()) {
+                this.dragging = true;
+            }
+        } else if (this.checkMouseover()) {
             this.dragging = true;
         }
         return this.dragging;
@@ -59,7 +59,7 @@ class LinkagePoint extends Coord {
 
         this._drawNode(reversing);
         
-        if (this.free) {
+        if (this.canDrag && this.canDrag()) {
             this._drawRing();
         }
     }

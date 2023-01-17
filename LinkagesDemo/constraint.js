@@ -55,8 +55,10 @@ class Constraint { // :Constraint<T>
 // constraint specifying that two data must be equal
 class EqualityConstraint extends Constraint { // :Constraint<T>
     // eq - notion of equality
-    constructor(eq) {
+    // cp - "copy" function, sends data from 1st arg to 2nd arg
+    constructor(eq, cp) {
         super(2);
+        this.cp = cp;            // T -> T -> void
         this.eq = eq;            // T -> T -> bool
         this.primaryLeft = true; // bool
     }
@@ -80,9 +82,9 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
 
     update(data) {
         if (this.primaryLeft) {
-            data[1] = data[0];
+            this.cp(data[0], data[1]);
         } else {
-            data[0] = data[1];
+            this.cp(data[1], data[0]);
         }
         return data;
     }

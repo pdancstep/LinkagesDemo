@@ -1,6 +1,7 @@
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor() {
-        super(function(z1,z2) { return z1.equals(z2); });
+        super(function(z1,z2) { return z1.equals(z2); },
+              function(zIn,zOut) { zOut.mut_sendTo(zIn); });
         this.focus = null;
     }
 
@@ -8,16 +9,16 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     addOperation(type) {
         let vs = [];
         if (type==ADDER) {
-            vs.push(this.addFree(new LinkagePoint(0,0,true)));
-            vs.push(this.addFree(new LinkagePoint(0,0,true)));
-            vs.push(this.addFree(new LinkagePoint(0,0,false)));
+            vs.push(this.addFree(0,0));
+            vs.push(this.addFree(0,0));
+            vs.push(this.addFree(0,0));
         } else if (type==MULTIPLIER) {
-            vs.push(this.addFree(new LinkagePoint(1,0,true)));
-            vs.push(this.addFree(new LinkagePoint(1,0,true)));
-            vs.push(this.addFree(new LinkagePoint(1,0,false)));
+            vs.push(this.addFree(1,0));
+            vs.push(this.addFree(1,0));
+            vs.push(this.addFree(1,0));
         } else if (type==CONJUGATOR) {
-            vs.push(this.addFree(new LinkagePoint(0,1,true)));
-            vs.push(this.addFree(new LinkagePoint(0,-1,false)));
+            vs.push(this.addFree(0,1));
+            vs.push(this.addFree(0,-1));
         } else {
             return null;
         }
@@ -26,6 +27,12 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         this.edges.push(e);
         e.updateDependencies();
         return e;
+    }
+
+    addFree(x,y) {
+        let z = super.addFree(new LinkagePoint(x,y));
+        z.value.canDrag = function() { return z.isFree(); };
+        return z;
     }
 
     // must provide the hidden vertex in order to resume display
@@ -38,16 +45,6 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         }
     }
 
-    invert(take, give) {
-        if (super.invert(take, give)) {
-            take.value.free = true;
-            give.value.free = false;
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
     display(reversing=false) {
         for (const e of this.edges) {
             if (e instanceof LinkageOp) {
@@ -58,6 +55,8 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
             if (reversing && this.focus && this.getDepends(this.focus).includes(v)) {
                 v.value.display(reversing);
             } else {
+                // need more than 2 states! want depends to look more distinct
+                // from other free vertices
                 v.value.display();
             }
         }
@@ -111,14 +110,12 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         if (v1) {
             v1.value.hidden = true;
             let v2 = this.findMouseover();
-            if (v2 && this.unify(v2, v1)) {
+            v1.value.hidden = false;
+            if (v2 && this.unify(v1, v2)) {
+                v2.value.hidden = true;
                 return true;
-            } else {
-                v1.value.hidden = false;
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
 }

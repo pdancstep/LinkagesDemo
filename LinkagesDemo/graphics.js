@@ -69,6 +69,7 @@ function printToPlot() {
     for (i=0; i<mainGraph.edges.length; i++){
         if (mainGraph.edges[i] instanceof LinkageOp) {
             fill(150);
+            noStroke();
             h = h - 40;
             text(mainGraph.edges[i].toString(), 200, h);
         }
