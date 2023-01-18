@@ -81,7 +81,7 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
 
     startReversal() {
         this.focus = this.findMouseover();
-        if (this.focus.isBound()) {
+        if (this.focus && this.focus.isBound()) {
             return true;
         } else {
             this.focus = null;

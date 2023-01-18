@@ -109,27 +109,37 @@ class RelGraph { // :RelGraph<T>
     //////////////////////
 
     // find free nodes in the given vertex's dependency tree
-    _leafDeps(v) { // :Vertex<T> -> [index(this.vertices) x index(this.edges)]
+    _leafDeps(v, seen = []) { // :Vertex<T> -> [index(this.vertices)]
+                            // -> [index(this.vertices) x index(this.edges)]
+        if (seen.includes(v.id)) { // loop detection
+            return [];
+        }
         let deps = [];
         for (const p of v.deps) {
             if (this.vertices[p[0]].isFree()) {
                 deps.push(p);
             } else {
-                deps = deps.concat(this._leafDeps(this.vertices[p[0]]));
+                seen.push(v.id);
+                deps = deps.concat(this._leafDeps(this.vertices[p[0]], seen));
             }
         }
         return deps;
     }
 
     // find bound nodes in the given vertex's dependency tree
-    _intermedDeps(v) { // :Vertex<T> -> [index(this.vertices) x index(this.edges)]
+    _intermedDeps(v, seen = []) { // :Vertex<T> -> [index(this.vertices)]
+                                // -> [index(this.vertices) x index(this.edges)]
+        if (seen.includes(v.id)) { // loop detection
+            return [];
+        }
         let deps = [];
         for (const p of v.deps) {
             if (this.vertices[p[0]].isFree()) {
                 continue;
             } else {
                 deps.push(p);
-                deps = deps.concat(this._intermedDeps(this.vertices[p[0]]));
+                seen.push(v.id);
+                deps = deps.concat(this._intermedDeps(this.vertices[p[0]], seen));
             }
         }
         return deps;

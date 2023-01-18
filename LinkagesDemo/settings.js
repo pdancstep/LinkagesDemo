@@ -5,13 +5,13 @@ const indicator = 50;
 const searchSize = .1;
 
 //how many iterations to run before updating
-const iterations = 100;
+const iterations = 1;
 
 // how many adjustment iterations to run after automatic differentiation
-const DIFF_ITERS = 10;
+const DIFF_ITERS = 1;
 
 //extra number of loops for updating positions, helps with rigidity
-const updateCycles = 3;
+const updateCycles = 10;
 
 //center coords.
 const CENTER_X = 650;
