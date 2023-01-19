@@ -218,7 +218,7 @@ class RelGraph { // :RelGraph<T>
                 return true;
             } else {
                 // should not get here; issue is probably with e.constraint
-                console.log("Warning: Unexpected failure to preform inversion.");
+                console.log("Warning: Unexpected failure to perform inversion.");
                 return false;
             }
         } else if (recur) {
@@ -227,7 +227,7 @@ class RelGraph { // :RelGraph<T>
                 // see if this vertex can invert with the target in one step
                 if (this._invert(this.vertices[p[0]], give, false)) {
                     // success! now do the rest
-                    if (this._invert(take, this.vertices[p[0]]), true) {
+                    if (this._invert(take, this.vertices[p[0]], true)) {
                         return true;
                     } else {
                         // recursive step failed, so undo the last step
@@ -246,6 +246,18 @@ class RelGraph { // :RelGraph<T>
         }
         // no error, we just failed to find a way to invert as requested
         return false;
+    }
+
+    _printDeps() {
+        let str = "Dependencies:\n"
+        for (let i=0; i<this.vertices.length; i++) {
+            str = str + i + ": ";
+            for (let j=0; j<this.vertices[i].deps.length; j++) {
+                str = str + "[" + this.vertices[i].deps[j] + "]";
+            }
+            str = str + "\n";
+        }
+        console.log(str);
     }
 }
 
