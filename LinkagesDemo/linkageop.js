@@ -12,13 +12,13 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
         let c = null;
         switch (type) {
         case ADDER:
-            c = new IterativeComplexAdder(STEP_SIZE, ITERATIONS);
+            c = new IdealComplexAdder(STEP_SIZE, ITERATIONS);
             break;
         case MULTIPLIER:
-            c = new IterativeComplexMultiplier(STEP_SIZE, ITERATIONS);
+            c = new IdealComplexMultiplier(STEP_SIZE, ITERATIONS);
             break;
         case CONJUGATOR:
-            c = new IterativeComplexConjugator(STEP_SIZE, ITERATIONS);
+            c = new IdealComplexConjugator(STEP_SIZE, ITERATIONS);
             break;
         default:
             console.log("Warning: Unsupported Operator Type");

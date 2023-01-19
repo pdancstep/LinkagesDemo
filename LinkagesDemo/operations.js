@@ -7,8 +7,9 @@ class IdealComplexAdder extends OperatorConstraint { // :Constraint<Coord>
         let subR = function(d) { return d[2].subtract(d[0]); };
         let add = function(d) { return d[0].translate(d[1]); };
         let eq = function(z1, z2) { return z1.equals(z2); };
+        let cp = function(zIn, zOut) { zOut.mut_sendTo(zIn); };
         let check = function(d) { return eq(add(d),d[2]); }
-        super([subL, subR, add], eq, check);
+        super([subL, subR, add], eq, cp, check);
     }
 }
 
@@ -18,8 +19,9 @@ class IdealComplexMultiplier extends OperatorConstraint { // :Constraint<Coord>
         let divR = function(d) { return d[2].divide(d[0]); };
         let mult = function(d) { return d[0].multiply(d[1]); }
         let eq = function(z1, z2) { return z1.equals(z2); };
+        let cp = function(zIn, zOut) { zOut.mut_sendTo(zIn); };
         let check = function(d) { return eq(mult(d),d[2]); }
-        super([divL, divR, mult], eq, check);
+        super([divL, divR, mult], eq, cp, check);
     }
 
     accepts(data) {
@@ -38,8 +40,9 @@ class IdealComplexConjugator extends OperatorConstraint { // :Constraint<Coord>
         let conjL = function(d) { return d[1].conjugate(); };
         let conjR = function(d) { return d[0].conjugate(); };
         let eq = function(z1, z2) { return z1.equals(z2); };
+        let cp = function(zIn, zOut) { zOut.mut_sendTo(zIn); }; 
         let check = function(d) { return eq(conjL(d),d[0]); };
-        super([conjL, conjR], eq, check);
+        super([conjL, conjR], eq, cp, check);
     }
 }
 

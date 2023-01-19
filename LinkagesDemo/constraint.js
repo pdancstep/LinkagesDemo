@@ -91,10 +91,11 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
 }
 
 class OperatorConstraint extends Constraint { // :Constraint<T>
-    constructor(updaters, eq, check) {
+    constructor(updaters, eq, cp, check) {
         super(updaters.length);
         this.ops = updaters; // :[[T] -> T]
         this.eq = eq;        // :T -> T -> bool
+        this.cp = cp;            // T -> T -> void
         this.check = check;  // :[T] -> bool
         this.bound = updaters.length-1; // :index
     }
@@ -119,7 +120,7 @@ class OperatorConstraint extends Constraint { // :Constraint<T>
     }
 
     update(data) {
-        data[this.bound] = this.ops[this.bound](data);
+        this.cp(this.ops[this.bound](data), data[this.bound]);
         return data;
     }
 }
