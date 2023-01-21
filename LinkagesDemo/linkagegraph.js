@@ -1,8 +1,13 @@
+const UPDATE_IDEAL = 0;
+const UPDATE_ITERATIVE = 1;
+const UPDATE_DIFFERENTIAL = 2;
+
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
-    constructor() {
+    constructor(updateMode = UPDATE_IDEAL) {
         super(function(z1,z2) { return z1.equals(z2); },
               function(zIn,zOut) { zOut.mut_sendTo(zIn); });
         this.focus = null;
+        this.mode = updateMode;
     }
 
     // use this instead of addRelated
@@ -22,8 +27,8 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         } else {
             return null;
         }
-
-        let e = new LinkageOp(vs, type, this.edges.length);
+        
+        let e = new LinkageOp(vs, type, this.mode, this.edges.length);
         this.edges.push(e);
         e.updateDependencies();
         return e;

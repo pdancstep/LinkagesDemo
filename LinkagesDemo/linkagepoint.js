@@ -8,6 +8,8 @@ class LinkagePoint extends Coord {
 
         this.dragging = false;
         this.hidden = false;
+
+        this.delta = new Coord(0,0);
     }
 
     checkMouseover() { // :-> bool
@@ -42,7 +44,7 @@ class LinkagePoint extends Coord {
         if (reversing) {
             fill(255);
         } else {
-            fill(200, 255, 200);
+            fill(100, 150, 255);
         }
         ellipse(this.getXPx(), this.getYPx(), 15, 15);
     }

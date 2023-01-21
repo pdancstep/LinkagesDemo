@@ -8,20 +8,45 @@ const STEP_SIZE = searchSize;
 const ITERATIONS = iterations;
 
 class LinkageOp extends Edge { // :Edge<LinkagePoint>
-    constructor(v, type, id) {
+    constructor(v, type, mode, id) {
         let c = null;
-        switch (type) {
-        case ADDER:
-            c = new IdealComplexAdder(STEP_SIZE, ITERATIONS);
+        switch (mode) {
+        case UPDATE_IDEAL:
+            switch (type) {
+            case ADDER:
+                c = new IdealComplexAdder();
+                break;
+            case MULTIPLIER:
+                c = new IdealComplexMultiplier();
+                break;
+            case CONJUGATOR:
+                c = new IdealComplexConjugator();
+                break;
+            default:
+                console.log("Warning: Unsupported Operator Type");
+                c = new Constraint(2);
+            }
             break;
-        case MULTIPLIER:
-            c = new IdealComplexMultiplier(STEP_SIZE, ITERATIONS);
+        case UPDATE_ITERATIVE:
+            switch (type) {
+            case ADDER:
+                c = new IterativeComplexAdder(STEP_SIZE, ITERATIONS);
+                break;
+            case MULTIPLIER:
+                c = new IterativeComplexMultiplier(STEP_SIZE, ITERATIONS);
+                break;
+            case CONJUGATOR:
+                c = new IterativeComplexConjugator(STEP_SIZE, ITERATIONS);
+                break;
+            default:
+                console.log("Warning: Unsupported Operator Type");
+                c = new Constraint(2);
+            }
             break;
-        case CONJUGATOR:
-            c = new IdealComplexConjugator(STEP_SIZE, ITERATIONS);
+        case UPDATE_DIFFERENTIAL:
             break;
         default:
-            console.log("Warning: Unsupported Operator Type");
+            console.log("Warning: Invalid Update Mode");
             c = new Constraint(2);
         }
         super(v, c, id);
