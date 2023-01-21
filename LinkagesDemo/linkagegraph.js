@@ -50,6 +50,15 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         }
     }
 
+    update(iters = 1) {
+        super.update(iters);
+        if (this.mode==UPDATE_DIFFERENTIAL) {
+            for (let v of this.vertices) {
+                v.value.mut_applyDifferential();
+            }
+        }
+    }
+
     display(reversing=false) {
         for (const e of this.edges) {
             if (e instanceof LinkageOp) {

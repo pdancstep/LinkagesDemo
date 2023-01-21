@@ -3,7 +3,7 @@ var activeVertex = null;
 
 function setup() {
     createCanvas(1600,900);
-    mainGraph = new LinkageGraph();
+    mainGraph = new LinkageGraph(UPDATE_IDEAL);
 }
 
 function draw() {
@@ -113,7 +113,7 @@ function touchStarted() {
 function touchMoved() {
     pressAndHold = false;
     if (activeVertex) {
-        activeVertex.value.update();
+        activeVertex.value.sendToMouse();
     }
     return false;
 }

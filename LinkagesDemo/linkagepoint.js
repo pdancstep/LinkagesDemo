@@ -22,21 +22,28 @@ class LinkagePoint extends Coord {
         if (this.canDrag) { // only call drag check method if it exists
             if (this.canDrag() && this.checkMouseover()) {
                 this.dragging = true;
+                this.delta = new Coord(1,0);
             }
         } else if (this.checkMouseover()) {
             this.dragging = true;
+            this.delta = new Coord(1,0);
         }
         return this.dragging;
     }
 
     notifyRelease() {
         this.dragging = false;
+        this.delta = new Coord(0,0);
     }
 
-    update() {
+    sendToMouse() {
         if (this.dragging) {
             this.mut_sendTo(getMouse());
         }
+    }
+
+    mut_applyDifferential() {
+        this.mut_translate(this.delta);
     }
 
     _drawNode(reversing = false) {
@@ -61,8 +68,14 @@ class LinkagePoint extends Coord {
 
         this._drawNode(reversing);
         
-        if (this.canDrag && this.canDrag()) {
+        if (this.canDrag && this.canDrag()) { // check for method existing, then call
             this._drawRing();
+        }
+
+        if (showDifferentials) {
+            fill(255);
+            noStroke();
+            text(this.delta.toString(), this.getXPx()+10, this.getYPx()-20);
         }
     }
 }
