@@ -4,8 +4,9 @@ const UPDATE_DIFFERENTIAL = 2;
 
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor(updateMode = UPDATE_IDEAL) {
-        super(function(z1,z2) { return z1.equals(z2); },
-              function(zIn,zOut) { zOut.mut_sendTo(zIn); });
+        super(function(z1,z2) { return z1.equals(z2) && z1.delta.equals(z2.delta); },
+              function(zIn,zOut) { zOut.mut_sendTo(zIn);
+                                   zOut.delta = zIn.delta; });
         this.focus = null;
         this.mode = updateMode;
     }
@@ -50,12 +51,9 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         }
     }
 
-    update(iters = 1) {
-        super.update(iters);
-        if (this.mode==UPDATE_DIFFERENTIAL) {
-            for (let v of this.vertices) {
-                v.value.mut_applyDifferential();
-            }
+    applyDifferential(delta) {
+        for (let v of this.vertices) {
+            v.value.mut_applyDifferential(delta);
         }
     }
 

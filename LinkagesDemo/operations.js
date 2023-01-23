@@ -229,13 +229,13 @@ class DifferentialComplexMultiplier extends IdealComplexMultiplier { // :Constra
         case 0:
             fprimeg = data[2].delta.multiply(data[1]);
             fgprime = data[2].multiply(data[1].delta);
-            gaquare = data[1].multiply(data[1]);
+            gsquare = data[1].multiply(data[1]);
             data[0].delta = fprimeg.subtract(fgprime).divide(gsquare);
             break;
         case 1:
             fprimeg = data[2].delta.multiply(data[0]);
             fgprime = data[2].multiply(data[0].delta);
-            gaquare = data[0].multiply(data[0]);
+            gsquare = data[0].multiply(data[0]);
             data[1].delta = fprimeg.subtract(fgprime).divide(gsquare);
             break;
         case 2:
@@ -257,8 +257,7 @@ class DifferentialComplexConjugator extends IdealComplexConjugator { // :Constra
 
     update(data) {
         let deltaIn = data[1-this.bound].delta;
-        data[this.bound].delta = new Coord(deltaIn.getX(), deltaIn.getY()*-1);
+        data[this.bound].delta = new Coord(deltaIn.getX(),deltaIn.getY()*-1);
         return data;
     }
 }
-

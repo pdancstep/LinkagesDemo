@@ -42,8 +42,8 @@ class LinkagePoint extends Coord {
         }
     }
 
-    mut_applyDifferential() {
-        this.mut_translate(this.delta);
+    mut_applyDifferential(delta) {
+        this.mut_translate(this.delta.multiply(delta));
     }
 
     _drawNode(reversing = false) {

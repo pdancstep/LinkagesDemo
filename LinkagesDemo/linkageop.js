@@ -44,6 +44,20 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             }
             break;
         case UPDATE_DIFFERENTIAL:
+            switch(type) {
+            case ADDER:
+                c = new DifferentialComplexAdder();
+                break;
+            case MULTIPLIER:
+                c = new DifferentialComplexMultiplier();
+                break;
+            case CONJUGATOR:
+                c = new DifferentialComplexConjugator();
+                break;
+            default:
+                console.log("Warning: Unsupported Operator Type");
+                c = new Constraint(2);
+            }
             break;
         default:
             console.log("Warning: Invalid Update Mode");

@@ -3,7 +3,7 @@ var activeVertex = null;
 
 function setup() {
     createCanvas(1600,900);
-    mainGraph = new LinkageGraph(UPDATE_IDEAL);
+    mainGraph = new LinkageGraph(UPDATE_DIFFERENTIAL);
 }
 
 function draw() {
@@ -113,7 +113,12 @@ function touchStarted() {
 function touchMoved() {
     pressAndHold = false;
     if (activeVertex) {
-        activeVertex.value.sendToMouse();
+        if (mainGraph.mode==UPDATE_DIFFERENTIAL) {
+            let delta = getMouse();
+            mainGraph.applyDifferential(delta.subtract(activeVertex.value));
+        } else {
+            activeVertex.value.sendToMouse();
+        }
     }
     return false;
 }
