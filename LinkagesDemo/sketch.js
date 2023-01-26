@@ -64,28 +64,23 @@ function touchStarted() {
     if (reversingOperator) {
         mainGraph.completeReversal();
         reversingOperator = false;
-    mainGraph._printDeps();
         return;
     }
 
     if (CLEAR_BUTTON.isNear(getMousePx(), 10)) {
         mainGraph = new LinkageGraph();
-    mainGraph._printDeps();
         return;
     }
     if (ADDER_BUTTON.isNear(getMousePx(), 10)) {
         mainGraph.addOperation(ADDER);
-    mainGraph._printDeps();
         return;
     }
     if (MULTR_BUTTON.isNear(getMousePx(), 10)) {
         mainGraph.addOperation(MULTIPLIER);
-    mainGraph._printDeps();
         return;
     }
     if (CONJ_BUTTON.isNear(getMousePx(), 10)) {
         mainGraph.addOperation(CONJUGATOR);
-    mainGraph._printDeps();
         return;
     }
 
@@ -107,15 +102,14 @@ function touchStarted() {
     
     //update tutorial...
     // tutorialClick();
-    mainGraph._printDeps();
 }
 
 function touchMoved() {
     pressAndHold = false;
     if (activeVertex) {
         if (mainGraph.mode==UPDATE_DIFFERENTIAL) {
-            let delta = getMouse();
-            mainGraph.applyDifferential(delta.subtract(activeVertex.value));
+            let mouse = getMouse();
+            mainGraph.applyDifferential(mouse.subtract(activeVertex.value));
         } else {
             activeVertex.value.sendToMouse();
         }
@@ -128,5 +122,6 @@ function touchEnded(){
     if (activeVertex) {
         activeVertex.value.notifyRelease();
         activeVertex = null;
+        mainGraph.update(updateCycles*500);
     }
 }

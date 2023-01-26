@@ -6,9 +6,13 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor(updateMode = UPDATE_IDEAL) {
         super(function(z1,z2) { return z1.equals(z2) && z1.delta.equals(z2.delta); },
               function(zIn,zOut) { zOut.mut_sendTo(zIn);
-                                   zOut.delta = zIn.delta; });
+                                   zOut.delta.mut_avg(zIn.delta); });
         this.focus = null;
         this.mode = updateMode;
+
+        // for reviewing history
+        this.frames = [];
+        this.record = 0;
     }
 
     // use this instead of addRelated
@@ -129,5 +133,28 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
             }
         }
         return false;
+    }
+
+    saveFrame() {
+        if (this.record>0) {
+            let fr = [];
+            for (const v of this.vertices) {
+                fr.push(v.value.toString());
+            }
+            this.frames.push(fr);
+            this.record--;
+        }
+    }
+
+    update(iters = 1) {
+        if (this.record>0) {
+            this.saveFrame();
+        }
+        super.update(iters);
+    }
+
+    recordNext(nframes, clearOld = false) {
+        this.record = nframes;
+        if (clearOld) { this.frames = []; }
     }
 }

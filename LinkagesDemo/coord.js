@@ -84,6 +84,18 @@ class Coord {
         this.y = r * sin(th);
         return this;        
     }
+
+    avg(vector) {
+        let x = (this.x + vector.getX())/2;
+        let y = (this.y + vector.getY())/2;
+        return new Coord(x, y);
+    }
+    
+    mut_avg(vector) {
+        this.x = (this.x + vector.getX())/2;
+        this.y = (this.y + vector.getY())/2;
+        return this;
+    }
     
     mut_sendTo(vector) {
         this.x = vector.getX();
