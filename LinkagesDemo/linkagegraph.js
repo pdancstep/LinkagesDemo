@@ -139,7 +139,7 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         if (this.record>0) {
             let fr = [];
             for (const v of this.vertices) {
-                fr.push(v.value.toString());
+                fr.push(v.value.delta.toString());
             }
             this.frames.push(fr);
             this.record--;
