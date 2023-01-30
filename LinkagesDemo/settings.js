@@ -2,7 +2,7 @@
 const indicator = 50;
 
 //how far to look in each direction
-const searchSize = .1;
+const searchSize = .02;
 
 //how many iterations to run before updating
 const iterations = 1;
@@ -11,7 +11,7 @@ const iterations = 1;
 const DIFF_ITERS = 1;
 
 //extra number of loops for updating positions, helps with rigidity
-const updateCycles = 1;
+const updateCycles = 5;
 
 //center coords.
 const CENTER_X = 650;

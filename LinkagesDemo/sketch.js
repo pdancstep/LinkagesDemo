@@ -3,7 +3,7 @@ var activeVertex = null;
 
 function setup() {
     createCanvas(1600,900);
-    mainGraph = new LinkageGraph(UPDATE_IDEAL);
+    mainGraph = new LinkageGraph(UPDATE_ITERATIVE);
 }
 
 function draw() {
@@ -122,6 +122,6 @@ function touchEnded(){
     if (activeVertex) {
         activeVertex.value.notifyRelease();
         activeVertex = null;
-        mainGraph.update(updateCycles*500);
+//        mainGraph.update(updateCycles*500);
     }
 }
