@@ -58,7 +58,7 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
     // cp - "copy" function, sends data from 1st arg to 2nd arg
     constructor(eq, cp) {
         super(2);
-        this.cp = cp;            // T -> T -> void
+        this.cp = cp;            // T -> T -> _
         this.eq = eq;            // T -> T -> bool
         this.primaryLeft = true; // bool
     }
@@ -81,12 +81,13 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
     }
 
     update(data) {
+        let newdata = data.slice();
         if (this.primaryLeft) {
-            this.cp(data[0], data[1]);
+            newdata[1] = this.cp(data[1], data[0]);
         } else {
-            this.cp(data[1], data[0]);
+            newdata[0] = this.cp(data[0], data[1]);
         }
-        return data;
+        return newdata;
     }
 }
 
@@ -95,7 +96,7 @@ class OperatorConstraint extends Constraint { // :Constraint<T>
         super(updaters.length);
         this.ops = updaters; // :[[T] -> T]
         this.eq = eq;        // :T -> T -> bool
-        this.cp = cp;            // T -> T -> void
+        this.cp = cp;        // :T -> T -> T
         this.check = check;  // :[T] -> bool
         this.bound = updaters.length-1; // :index
     }
@@ -120,7 +121,8 @@ class OperatorConstraint extends Constraint { // :Constraint<T>
     }
 
     update(data) {
-        this.cp(this.ops[this.bound](data), data[this.bound]);
-        return data;
+        let newdata = data.slice();
+        newdata[this.bound] = this.cp(data[this.bound], this.ops[this.bound](data));
+        return newdata;
     }
 }

@@ -11,7 +11,7 @@ const iterations = 1;
 const DIFF_ITERS = 1;
 
 //extra number of loops for updating positions, helps with rigidity
-const updateCycles = 10;
+const updateCycles = 1;
 
 //center coords.
 const CENTER_X = 650;

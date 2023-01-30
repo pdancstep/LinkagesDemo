@@ -345,7 +345,7 @@ class Edge { // :Edge<T>
     update(eq = this.constraint.eq) { // : (T -> T -> bool) -> bool
         let changed = false;
         let olddata = this.vertices.map(function (v) { return v.value; });
-        let newdata = this.constraint.update(olddata.slice());
+        let newdata = this.constraint.update(olddata);
         for (let i=0; i<this.vertices.length; i++) {
             if (!eq(olddata[i], newdata[i])) {
                 this.vertices[i].value = newdata[i];

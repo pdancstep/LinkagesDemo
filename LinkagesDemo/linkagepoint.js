@@ -12,6 +12,19 @@ class LinkagePoint extends Coord {
         this.delta = new Coord(0,0);
     }
 
+    copy(parent = null) {
+        let z = new LinkagePoint(this.x, this.y);
+        if (parent) {
+            z.canDrag = function() { return parent.isFree(); };
+        } else {
+            z.canDrag = this.canDrag;
+        }
+        z.dragging = this.dragging;
+        z.hidden = this.hidden;
+        z.delta = this.delta.copy();
+        return z;
+    }
+
     checkMouseover() { // :-> bool
         if (this.hidden) { return false; }
         return this.isNearPx(getMousePx(), 25);

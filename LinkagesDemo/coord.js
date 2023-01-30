@@ -96,6 +96,10 @@ class Coord {
         this.y = (this.y + vector.getY())/2;
         return this;
     }
+
+    copy() {
+        return new Coord(this.x, this.y);
+    }
     
     mut_sendTo(vector) {
         this.x = vector.getX();
