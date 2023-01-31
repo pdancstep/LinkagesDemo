@@ -2,6 +2,7 @@
 const ADDER = 0;
 const MULTIPLIER = 1;
 const CONJUGATOR = 2;
+const EXPONENTIAL = 3;
 
 // these should be in settings.js
 const STEP_SIZE = searchSize;
@@ -22,6 +23,9 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             case CONJUGATOR:
                 c = new IdealComplexConjugator();
                 break;
+            case EXPONENTIAL:
+                c = new IdealComplexExponent();
+                break;
             default:
                 console.log("Warning: Unsupported Operator Type");
                 c = new Constraint(2);
@@ -37,6 +41,9 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
                 break;
             case CONJUGATOR:
                 c = new IterativeComplexConjugator(STEP_SIZE, ITERATIONS);
+                break;
+            case EXPONENTIAL:
+                c = new IterativeComplexExponent(STEP_SIZE, ITERATIONS);
                 break;
             default:
                 console.log("Warning: Unsupported Operator Type");
@@ -102,6 +109,12 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
                  this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
             line(this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx(),
                  this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
+        } else if (this.type==EXPONENTIAL) {
+            stroke(100,100,0);
+            line(CENTER_X, CENTER_Y,
+                 this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx());
+            line(this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx(),
+                 this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
         } else {
             // bad
         }
@@ -118,6 +131,10 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
                     this.vertices[2].value.toString(0));
         } else if (this.type==CONJUGATOR) {
             return ("conj" +
+                    this.vertices[0].value.toString(0) + " = " +
+                    this.vertices[1].value.toString(0));
+        } else if (this.type==EXPONENTIAL) {
+            return ("exp" +
                     this.vertices[0].value.toString(0) + " = " +
                     this.vertices[1].value.toString(0));
         }

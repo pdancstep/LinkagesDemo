@@ -31,6 +31,9 @@ class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
         } else if (type==CONJUGATOR) {
             vs.push(this.addFree(0,1));
             vs.push(this.addFree(0,-1));
+        } else if (type==EXPONENTIAL) {
+            vs.push(this.addFree(0,PI));
+            vs.push(this.addFree(-1,0));
         } else {
             return null;
         }

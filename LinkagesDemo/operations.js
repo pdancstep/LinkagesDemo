@@ -46,6 +46,29 @@ class IdealComplexConjugator extends OperatorConstraint { // :Constraint<Coord>
     }
 }
 
+class IdealComplexExponent extends OperatorConstraint { // :Constraint<Coord>
+    constructor(alwaysUsePrincipal = true) {
+        let zlog = function(d) { let n = IdealComplexExponent._nearestN(d[1].log(0), d[0]);
+                                 return d[1].log(n); };
+        if (alwaysUsePrincipal) {
+            zlog = function(d) { return d[1].log(0); };
+        }
+        let zexp = function(d) { return d[0].exp(); }
+        let eq = function(z1, z2) { return z1.equals(z2); };
+        let cp = function(zOld, zNew) { return zOld.copy().mut_sendTo(zNew); };
+        let check = function(d) { return eq(zexp(d), d[1]); };
+        super([zlog, zexp], eq, cp, check);
+    }
+
+    static _nearestN(principal, guess) { // TODO actually make this work right
+        let yPrinc = principal.getY();
+        let yGuess = guess.getY();
+        let diff = yPrinc - yGuess;
+        let circles = diff/(2*PI);
+        return round(circles);
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////
 // "naive" constraints that update iteratively at a given resolution //
 ///////////////////////////////////////////////////////////////////////
@@ -184,6 +207,55 @@ class IterativeComplexConjugator extends IdealComplexConjugator { // :Constraint
             return guess.mut_sendTo(conj);
         } else {
             let theta = conj.subtract(guess).getTh();
+            return guess.mut_translate(new Polar(this.stepSize, theta));
+        }
+    }
+}
+
+class IterativeComplexExponent extends IdealComplexExponent { // :Constraint<Coord>
+    constructor(stepSize, iters) {
+        super(false);
+        this.stepSize = stepSize; // :number
+        this.iters = iters;       // :nat
+    }
+
+    update(data) {
+        for (let i=0; i<this.iters; i++) {
+            data = this.iterate(data);
+        }
+        return data;
+    }
+    
+    iterate(data) {
+        switch (this.bound) {
+        case 0:
+            data[0] = this.iterateLog(data[1], data[0]);
+            break;
+        case 1:
+            data[1] = this.iterateExp(data[0], data[1]);
+            break;
+        default:
+            // should not get here
+        }
+        return data;
+    }
+
+    iterateLog(z, guess) {
+        let zlog = z.log(IdealComplexExponent._nearestN(z.log(0), guess));
+        if (zlog.isNear(guess, this.stepSize)) {
+            return guess.mut_sendTo(zlog);
+        } else {
+            let theta = zlog.subtract(guess).getTh();
+            return guess.mut_translate(new Polar(this.stepSize, theta));
+        }
+    }
+
+    iterateExp(z, guess) {
+        let zexp = z.exp();
+        if (zexp.isNear(guess, this.stepSize)) {
+            return guess.mut_sendTo(zexp);
+        } else {
+            let theta = zexp.subtract(guess).getTh();
             return guess.mut_translate(new Polar(this.stepSize, theta));
         }
     }

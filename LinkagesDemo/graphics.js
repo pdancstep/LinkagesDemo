@@ -37,6 +37,7 @@ const CLEAR_BUTTON = new Coord(30, 30);
 const ADDER_BUTTON = new Coord(30, 60);
 const MULTR_BUTTON = new Coord(30, 90);
 const CONJ_BUTTON = new Coord(30, 120);
+const EXP_BUTTON = new Coord(30, 150);
 
 function drawButtons() {
     textSize(15);
@@ -58,6 +59,10 @@ function drawButtons() {
     fill(30,30,200);
     ellipse(30,120,20,20);
     text("conjugator",45,120);
+
+    fill(100,100,0)
+    ellipse(30,150,20,20);
+    text("exponential",45,150);
 }
 
 function printToPlot() {

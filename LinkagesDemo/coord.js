@@ -97,6 +97,26 @@ class Coord {
         return this;
     }
 
+    exp() {
+        let r = exp(this.x);
+        let th = this.y;
+        return new Polar(r, th);
+    }
+
+    mut_exp() {
+        return this.mut_sendTo(this.exp());
+    }
+
+    log(n = 0) {
+        let x = log(this.getR());
+        let y = this.getTh() + 2*PI*n;
+        return new Coord(x, y);
+    }
+
+    mut_log(n = 0) {
+        return this.mut_sendTo(this.log(n));
+    }
+    
     copy() {
         return new Coord(this.x, this.y);
     }

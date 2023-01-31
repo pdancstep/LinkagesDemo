@@ -83,6 +83,10 @@ function touchStarted() {
         mainGraph.addOperation(CONJUGATOR);
         return;
     }
+    if (EXP_BUTTON.isNear(getMousePx(), 10)) {
+        mainGraph.addOperation(EXPONENTIAL);
+        return;
+    }
 
     pressAndHold = true;
     timerStart = millis();
