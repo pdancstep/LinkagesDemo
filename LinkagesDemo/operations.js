@@ -60,12 +60,24 @@ class IdealComplexExponent extends OperatorConstraint { // :Constraint<Coord>
         super([zlog, zexp], eq, cp, check);
     }
 
-    static _nearestN(principal, guess) { // TODO actually make this work right
-        let yPrinc = principal.getY();
+    static _nearestN(principal, guess) {
+        let ySol = principal.getY();
         let yGuess = guess.getY();
-        let diff = yPrinc - yGuess;
-        let circles = diff/(2*PI);
-        return round(circles);
+        let circles = 0;
+        let diff = ySol - yGuess;
+        while (abs(diff) > PI) {
+            let yPos = ySol + 2*PI;
+            let yNeg = ySol - 2*PI;
+            if (abs(yGuess - yPos) < abs(yGuess - yNeg)) {
+                circles++;
+                ySol = yPos;
+            } else {
+                circles--;
+                ySol = yNeg;
+            }
+            diff = ySol - yGuess;
+        }
+        return circles;
     }
 }
 

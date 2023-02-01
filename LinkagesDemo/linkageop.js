@@ -24,7 +24,7 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
                 c = new IdealComplexConjugator();
                 break;
             case EXPONENTIAL:
-                c = new IdealComplexExponent();
+                c = new IdealComplexExponent(false);
                 break;
             default:
                 console.log("Warning: Unsupported Operator Type");
