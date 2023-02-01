@@ -111,49 +111,24 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
                  this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
         } else if (this.type==EXPONENTIAL) {
             stroke(200,100,200);
-            if(this.vertices[0].value.dragging){
-
+            if (this.vertices[0].value.dragging || this.vertices[1].value.dragging) {
+                // still need to work out correct values for a and b
+                let a = 1;
+                let b = this.vertices[0].value.getY()/this.vertices[0].value.getX();
                 let theta = -12*PI;
-                let a = 50;
-                let b = -1/tan(this.vertices[0].value.getTh());
-                let r = a*exp(b*theta);
-
-                console.log(r);
-
                 beginShape();
-
-                while(r<=this.vertices[1].value.getR()){
-
-                    theta = theta + PI/50;
-                    //if((b*theta)<15){
-                        r = a*exp(b*theta)
-                        vertex(CENTER_X+r*cos(theta),CENTER_Y+r*sin(theta));
-                    //}
-
-                }
-
-                endShape();
-/*
-                //spiral
-                beginShape();
-                for (let theta=-12*PI;theta<12*_PI;theta=theta+((TWO_PI)/100)){
-                    if((b*theta)<15){
-                        r = a*exp(b*theta)
-                        vertex(400+r*cos(theta),400+r*sin(theta))
-                    }
+                while (a*exp(b*theta) <= this.vertices[1].value.getR()) {
+                    theta += PI/100;
+                    let p = new Polar(a * exp(b*theta), theta);
+                    vertex(p.getXPx(), p.getYPx());
                 }
                 endShape();
-         */       
-
-
-
             }
-            line(this.vertices[0].value.getXPx(),0,this.vertices[0].value.getXPx(),height);
-            ellipse(CENTER_X,CENTER_Y,2*globalScale*this.vertices[1].value.getR(),2*globalScale*this.vertices[1].value.getR());
-            //line(CENTER_X, CENTER_Y,
-                 //this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx());
-            //line(this.vertices[0].value.getXPx(), this.vertices[0].value.getYPx(),
-                 //this.vertices[1].value.getXPx(), this.vertices[1].value.getYPx());
+            line(this.vertices[0].value.getXPx(), 0,
+                 this.vertices[0].value.getXPx(), height);
+            ellipse(CENTER_X, CENTER_Y,
+                    2*globalScale*this.vertices[1].value.getR(),
+                    2*globalScale*this.vertices[1].value.getR());
         } else {
             // bad
         }
