@@ -40,4 +40,4 @@ var indicatorFlash = false;
 var supressCoords = false;
 
 // show little derivatives near nodes
-var showDifferentials = true;
+var showDifferentials = false;
