@@ -113,11 +113,12 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             stroke(200,100,200);
             if (this.vertices[0].value.dragging || this.vertices[1].value.dragging) {
                 // still need to work out correct values for a and b
+                let b = -this.vertices[0].value.getY()/this.vertices[0].value.getX();
                 let a = 1;
-                let b = this.vertices[0].value.getY()/this.vertices[0].value.getX();
                 let theta = -12*PI;
                 beginShape();
-                while (a*exp(b*theta) <= this.vertices[1].value.getR()) {
+                while (a*exp(b*theta) <= this.vertices[1].value.getR()*2
+                       && theta < 12*PI) {
                     theta += PI/100;
                     let p = new Polar(a * exp(b*theta), theta);
                     vertex(p.getXPx(), p.getYPx());
