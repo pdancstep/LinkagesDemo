@@ -1,3 +1,11 @@
+const UPDATE_IDEAL = 0;
+const UPDATE_ITERATIVE = 1;
+const UPDATE_DIFFERENTIAL = 2;
+
+//////////////////////////////////
+
+const UPDATE_MODE = UPDATE_DIFFERENTIAL;
+
 //background color and debug variable
 const indicator = 50;
 
@@ -40,4 +48,4 @@ var indicatorFlash = false;
 var supressCoords = false;
 
 // show little derivatives near nodes
-var showDifferentials = false;
+var showDifferentials = true;

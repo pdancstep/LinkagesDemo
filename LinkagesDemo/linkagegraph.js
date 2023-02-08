@@ -1,7 +1,3 @@
-const UPDATE_IDEAL = 0;
-const UPDATE_ITERATIVE = 1;
-const UPDATE_DIFFERENTIAL = 2;
-
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor(updateMode = UPDATE_IDEAL) {
         super(function(z1,z2) { return z1.equals(z2) && z1.delta.equals(z2.delta); },

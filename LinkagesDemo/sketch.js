@@ -3,7 +3,7 @@ var activeVertex = null;
 
 function setup() {
     createCanvas(1600,900);
-    mainGraph = new LinkageGraph(UPDATE_IDEAL);
+    mainGraph = new LinkageGraph(UPDATE_MODE);
 }
 
 function draw() {
