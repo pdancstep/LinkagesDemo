@@ -128,7 +128,7 @@ class Coord {
     }
 
     toString(precision = 1) {
-        return "(" + nfc(this.x,precision) + ", " + nfc(this.y,precision) + "i)";
+        return "(" + round(this.x,precision) + ", " + round(this.y,precision) + "i)";
     }
     
     isOrigin() {
