@@ -361,7 +361,7 @@ class DifferentialComplexExponent extends IdealComplexExponent { // :Constraint<
             data[0].delta = this.one.divide(data[0]);
             break;
         case 1:
-            data[1].delta = data[0].delta.exp().subtract(this.one).multiply(data[1]);
+            data[1].delta = data[1].multiply(this.one);
             break;
         default:
             // should not get here
