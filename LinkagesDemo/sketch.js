@@ -68,7 +68,7 @@ function touchStarted() {
     }
 
     if (CLEAR_BUTTON.isNear(getMousePx(), 10)) {
-        mainGraph = new LinkageGraph();
+        mainGraph = new LinkageGraph(UPDATE_MODE);
         return;
     }
     if (ADDER_BUTTON.isNear(getMousePx(), 10)) {

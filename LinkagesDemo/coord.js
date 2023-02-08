@@ -128,7 +128,13 @@ class Coord {
     }
 
     toString(precision = 1) {
-        return "(" + round(this.x,precision) + ", " + round(this.y,precision) + "i)";
+        // hack so that nfc doesn't display small floating point values wrong
+        let x = this.x;
+        if (abs(x) < 0.01) { x = 0; }
+        let y = this.y;
+        if (abs(y) < 0.01) { y = 0; }
+        
+        return "(" + nfc(x,precision) + ", " + nfc(y,precision) + "i)";
     }
     
     isOrigin() {
