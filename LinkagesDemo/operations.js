@@ -340,8 +340,32 @@ class DifferentialComplexConjugator extends IdealComplexConjugator { // :Constra
     }
 
     update(data) {
+        // we need the conjugate at the next step, not here!
+        // delta gets multiplied by the actual movement of the input,
+        // but there's no factor we can give here to do that
         let deltaIn = data[1-this.bound].delta;
         data[this.bound].delta = new Coord(deltaIn.getX(),deltaIn.getY()*-1);
+        return data;
+    }
+}
+
+class DifferentialComplexExponent extends IdealComplexExponent { // :Constraint<LP>
+    constructor() {
+        super();
+        this.one = new Coord(1,0);
+    }
+
+    update(data) {
+        switch (this.bound) {
+        case 0:
+            data[0].delta = this.one.divide(data[0]);
+            break;
+        case 1:
+            data[1].delta = data[0].delta.exp().subtract(this.one).multiply(data[1]);
+            break;
+        default:
+            // should not get here
+        }
         return data;
     }
 }

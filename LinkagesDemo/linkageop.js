@@ -61,6 +61,9 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             case CONJUGATOR:
                 c = new DifferentialComplexConjugator();
                 break;
+            case EXPONENTIAL:
+                c = new DifferentialComplexExponent();
+                break;
             default:
                 console.log("Warning: Unsupported Operator Type");
                 c = new Constraint(2);
@@ -113,15 +116,16 @@ class LinkageOp extends Edge { // :Edge<LinkagePoint>
             stroke(200,100,200);
             if (this.vertices[0].value.dragging || this.vertices[1].value.dragging) {
                 // still need to work out correct values for a and b
-                let b = -this.vertices[0].value.getY()/this.vertices[0].value.getX();
+                let b = this.vertices[0].value.getX()/this.vertices[0].value.getY();
                 let a = 1;
                 let theta = -12*PI;
                 beginShape();
-                while (a*exp(b*theta) <= this.vertices[1].value.getR()*2
-                       && theta < 12*PI) {
+                for (let i=0; i<12000; i++) {
                     theta += PI/100;
-                    let p = new Polar(a * exp(b*theta), theta);
-                    vertex(p.getXPx(), p.getYPx());
+                    if (b*theta < 5) { // don't try to plot coords further out than e^5
+                        let p = new Polar(a * exp(b*theta), theta);
+                        vertex(p.getXPx(), p.getYPx());
+                    }
                 }
                 endShape();
             }
