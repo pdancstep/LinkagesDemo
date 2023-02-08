@@ -358,10 +358,10 @@ class DifferentialComplexExponent extends IdealComplexExponent { // :Constraint<
     update(data) {
         switch (this.bound) {
         case 0:
-            data[0].delta = this.one.divide(data[0]);
+            data[0].delta = data[1].delta.divide(data[0]);
             break;
         case 1:
-            data[1].delta = data[1].multiply(this.one);
+            data[1].delta = data[1].multiply(data[0].delta);
             break;
         default:
             // should not get here
