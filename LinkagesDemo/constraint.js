@@ -91,6 +91,17 @@ class EqualityConstraint extends Constraint { // :Constraint<T>
     }
 }
 
+function makeEqualityConstraintBuilder(eq, cp) { // (T -> T -> bool) ->
+                                                 // (T -> T -> _) ->
+                                                 // (-> EqualityConstraint<T>)
+    return (function() { return new EqualityConstraint(eq, cp); });
+}
+
+function defaultEqualityConstraintBuilder() { // :-> EqualityConstraint<T>
+    return makeEqualityConstraintBuilder(function(x,y) { return x===y; },
+                                         function(xIn, xOut) { xOut = xIn; });
+}
+
 class OperatorConstraint extends Constraint { // :Constraint<T>
     constructor(updaters, eq, cp, check) {
         super(updaters.length);

@@ -4,14 +4,12 @@ class RelGraph { // :RelGraph<T>
     // eq :T -> T -> bool - notion of equality for vertex data
     // cp :T -> T -> void - function that copies data from 1st arg to 2nd arg
     //                      TODO: default for cp doesn't really make sense
-    constructor(eq = function(x,y) { return x===y; },
-                cp = function(xIn, xOut) { xOut = xIn; }) {
+    constructor(eq = defaultEqualityConstraintBuilder) {
         this.vertices = []; // :[Vertex<T>]
         this.edges = []; // :[Edge<T>]
 
         // internal
-        this.eq = eq; // :T -> T -> bool
-        this.cp = cp; // :T -> T -> void
+        this.buildEqualityConstraint = eq; // :-> EqualityConstraint<T>
         this.history = [] // :[index(this.edges)]
     }
 
@@ -154,9 +152,7 @@ class RelGraph { // :RelGraph<T>
     
     _unify(v1, v2) { // :Vertex<T> -> Vertex<T> -> Edge<T>
         this.history.unshift(this.edges.length); // history is LIFO
-        let e = new Edge([v1, v2],
-                         new EqualityConstraint(this.eq, this.cp),
-                         this.edges.length);
+        let e = new Edge([v1, v2], this.buildEqualityConstraint(), this.edges.length);
         this.edges.push(e);
         e.updateDependencies();
         return e;
