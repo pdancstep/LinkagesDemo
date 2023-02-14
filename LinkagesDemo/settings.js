@@ -4,7 +4,7 @@ const UPDATE_DIFFERENTIAL = 2;
 
 //////////////////////////////////
 
-const UPDATE_MODE = UPDATE_DIFFERENTIAL;
+const UPDATE_MODE = UPDATE_ITERATIVE;
 
 //background color and debug variable
 const indicator = 50;

@@ -273,6 +273,42 @@ class IterativeComplexExponent extends IdealComplexExponent { // :Constraint<Coo
     }
 }
 
+class IterativeComplexEqualityConstraint extends EqualityConstraint {
+    constructor(eq, cp, stepSize, iters) {
+        super(eq, cp);
+        this.stepSize = stepSize;
+        this.iters = iters;
+    }
+
+    update(data) {
+        for (let i=0; i<this.iters; i++) {
+            let newdata = data.slice();
+            if (this.primaryLeft) {
+                newdata[1] = this.iterate(data[0], data[1]);
+            } else {
+                newdata[0] = this.iterate(data[1], data[0]);
+            }
+            data = newdata;
+        }
+        return data;
+    }
+
+    iterate(z, guess) {
+        if (z.isNear(guess, this.stepSize)) {
+            return guess.mut_sendTo(z);
+        } else {
+            let theta = z.subtract(guess).getTh();
+            return guess.mut_translate(new Polar(this.stepSize, theta));
+        }
+    }
+}
+
+function makeIterativeComplexEqualityConstraintBuilder(eq, cp) {
+    return function() {
+        return new IterativeComplexEqualityConstraint(eq, cp, STEP_SIZE, ITERATIONS);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // "differential" constraints that update with automatic differentiation  //
 //  (note that this algorithm is not compatible with basic Coord class)   //

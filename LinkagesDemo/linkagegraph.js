@@ -1,12 +1,16 @@
 class LinkageGraph extends RelGraph { // :RelGraph<LinkagePoint>
     constructor(updateMode = UPDATE_IDEAL) {
-        let eq = makeEqualityConstraintBuilder(
-            function(z1,z2) { return z1.equals(z2) && z1.delta.equals(z2.delta); },
-            function(zOld,zNew) { let z = zOld.copy();
-                                  z.mut_sendTo(zNew);
-                                  z.delta.mut_avg(zNew.delta);
-                                  return z; });
+        let f_eq = function(z1,z2) { return z1.equals(z2) && z1.delta.equals(z2.delta); };
+        let f_cp = function(zOld,zNew) { let z = zOld.copy();
+                                         z.mut_sendTo(zNew);
+                                         z.delta.mut_avg(zNew.delta);
+                                         return z; };
+        let eq = makeEqualityConstraintBuilder(f_eq, f_cp);
+        if (updateMode==UPDATE_ITERATIVE) {
+            eq = makeIterativeComplexEqualityConstraintBuilder(f_eq, f_cp);
+        }
         super(eq);
+
         this.focus = null;
         this.mode = updateMode;
 
