@@ -1,34 +1,32 @@
 function drawGrid() {
-    if (!myLevels[level].coordinatesOff) {
-        //background grid
-        for (i=-30; i<30; i++){
-            strokeWeight(1);
-            stroke(75);
-            noFill();
-            line(CENTER_X + i*globalScale, 0, CENTER_X + i*globalScale, height);
-            line(0, CENTER_Y + i*globalScale, width, CENTER_Y + i*globalScale);
-        }
-        
-        //axes,unit circle
-        noFill();
-        stroke(200);
+    //background grid
+    for (i=-30; i<30; i++){
         strokeWeight(1);
-        line(0, CENTER_Y, width, CENTER_Y);
-        line(CENTER_X, 0, CENTER_X ,height);
-        ellipse(CENTER_X, CENTER_Y, 2*globalScale, 2*globalScale); // unit circle
+        stroke(75);
+        noFill();
+        line(CENTER_X + i*globalScale, 0, CENTER_X + i*globalScale, height);
+        line(0, CENTER_Y + i*globalScale, width, CENTER_Y + i*globalScale);
+    }
+    
+    //axes,unit circle
+    noFill();
+    stroke(200);
+    strokeWeight(1);
+    line(0, CENTER_Y, width, CENTER_Y);
+    line(CENTER_X, 0, CENTER_X ,height);
+    ellipse(CENTER_X, CENTER_Y, 2*globalScale, 2*globalScale); // unit circle
 
-        //coordinate data
-        textSize(15);
-        textAlign(CENTER,CENTER);
-        for (i=-30; i<30; i++){
-            fill(150);
-            noStroke();
-            ellipse(CENTER_X + i*globalScale, CENTER_Y, 5, 5);
-            ellipse(CENTER_X, CENTER_Y + i*globalScale, 5, 5);
-            if (!supressCoords){
-                text(i, CENTER_X+i*globalScale, CENTER_Y-16);
-                text(-i+"i", CENTER_X-20, CENTER_Y+i*globalScale);
-            }
+    //coordinate data
+    textSize(15);
+    textAlign(CENTER,CENTER);
+    for (i=-30; i<30; i++){
+        fill(150);
+        noStroke();
+        ellipse(CENTER_X + i*globalScale, CENTER_Y, 5, 5);
+        ellipse(CENTER_X, CENTER_Y + i*globalScale, 5, 5);
+        if (!supressCoords){
+            text(i, CENTER_X+i*globalScale, CENTER_Y-16);
+            text(-i+"i", CENTER_X-20, CENTER_Y+i*globalScale);
         }
     }
 }
